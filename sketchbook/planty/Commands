@@ -1,0 +1,19 @@
+Send:
+MOTR=<parameter>
+<parameter>: 1=On, 2=Off
+Return:
+MOTR=<parameter>,OK if success
+MOTR,ERR if error
+
+Send: 
+MOIS
+Return:
+MOIS=<value>,OK if success
+MOIS,ERR if error
+
+Send:
+TEMP=<parameter>
+<parameter>: 1=read temperature, 2=read humidity
+Return:
+TEMP=<parameter>,<value>,OK
+TEMP,ERR if error
