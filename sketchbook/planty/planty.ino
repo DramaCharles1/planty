@@ -1,4 +1,5 @@
-#include <dht.h>;
+#include <dht.h>
+#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
 int motorTranPin = A0; 
@@ -51,28 +52,57 @@ void loop()
 
     if(action == "MOTR")
     {
-      
+
       if(ets.substring(5).toInt() == 1)
       {
         digitalWrite(A0, HIGH);
         digitalWrite(boardLed, HIGH);  
-        Serial.println(ets);    
+        Serial.println(ets+",OK");    
 
       }
       else if(ets.substring(5).toInt() == 0)
       {
         digitalWrite(A0, LOW);
         digitalWrite(boardLed, LOW);
-        Serial.println(ets);      
+        Serial.println(ets+",OK");      
       }
       else
       {
-        Serial.println("Command not in the right format!");
-        Serial.println(ets);
+        Serial.println(action+",ERR");
       }    
 
     }
-    else
+    else if(action == "MOIS")
+    {
+      //Read mois sensor
+      int moisValue = readMoistureSensor();
+
+      if(moisValue == -1)
+      {
+        Serial.println(action+",ERR");        
+      }
+      else
+      {
+        Serial.println(ets + "," + moisValue + ",OK");         
+      }
+
+    }
+    else if(action == "TEMP")
+    {
+      float tempHumValue = readHumTempSensor(ets.substring(5).toInt());
+      
+      if(tempHumValue == -1)
+      {
+        Serial.println(action+",ERR");                
+      }
+      else
+      {
+        Serial.println(ets + ",OK");
+        Serial.println(tempHumValue); //Uggly hack. should convert float to string in some way
+       
+      }     
+
+    }
     {
       Serial.println("Unknown command: " + ets);
 
@@ -142,17 +172,17 @@ void loop()
 
 /*
 void turnOn() {
-  state = digitalRead(2);
-
-  if (state == HIGH) {
-    digitalWrite(A0, HIGH);
-    digitalWrite(boardLed, HIGH);
-  } 
-  if (state == LOW) {
-    digitalWrite(A0, LOW);
-    digitalWrite(boardLed, LOW);
-  }
-}*/
+ state = digitalRead(2);
+ 
+ if (state == HIGH) {
+ digitalWrite(A0, HIGH);
+ digitalWrite(boardLed, HIGH);
+ } 
+ if (state == LOW) {
+ digitalWrite(A0, LOW);
+ digitalWrite(boardLed, LOW);
+ }
+ }*/
 
 void serialEvent(){
   //statements
@@ -179,5 +209,39 @@ String checkCommand(String in)
   return action;
 
 }
+
+int readMoistureSensor()
+{
+  int moisValue = -1;
+  digitalWrite(moisSensorTranPin, HIGH); // moisSensorTranPin HIGH
+  delay(200);
+  moisValue = analogRead(sensorPin);
+  digitalWrite(moisSensorTranPin, LOW); // moisSensorTranPin LOW
+  delay(200);
+
+  return moisValue;
+}
+
+float readHumTempSensor(int action)
+{
+  float humTempValue = -1;
+
+  int chk = DHT.read11(DHT11PIN);
+
+  if(action == 1) //If action=1 read temperature
+  {
+    humTempValue = DHT.temperature;        
+  }
+  else if(action == 2) //if action=2 read humidity
+  {
+    humTempValue = DHT.humidity;       
+  }
+
+  return humTempValue;  
+
+}
+
+
+
 
 
