@@ -16,13 +16,7 @@ volatile char sen = 'o';
 String ets = "";
 boolean stringComplete = false;
 boolean serialFlag = false;
-
-//Values
-//int sensorValue;
-//double tempValue;
-//double humValue;
-
-//Constants 
+ 
 dht DHT;
 
 void setup()
@@ -52,7 +46,15 @@ void loop()
     {
 
       action = ets.substring(0,4);
-
+      //ets = ets.remove(1,1);
+      
+      /*
+      if(ets.endsWith('\n'))
+      {
+        ets = ets.replace('\n',"");
+        
+      }*/
+      
       if(action == "MOTR")
       {
 
@@ -86,7 +88,7 @@ void loop()
         }
         else
         {
-          Serial.println(ets + moisValue + ",OK");         
+          Serial.print(ets + moisValue + ",OK");         
         }
 
       }
