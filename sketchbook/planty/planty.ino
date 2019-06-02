@@ -1,5 +1,4 @@
 #include <dht.h>
-//#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
 int motorTranPin = A0;
@@ -14,8 +13,10 @@ volatile char rec = 'o';
 volatile char sen = 'o';
 
 String ets = "";
+String debug = "false";
 boolean stringComplete = false;
 boolean serialFlag = false;
+boolean switchFlag = false;
 
 dht DHT;
 
@@ -28,114 +29,158 @@ void setup()
   digitalWrite(motorTranPin, LOW);  // turn off the motor
 
   pinMode(2, INPUT_PULLUP);
-  //attachInterrupt(interruptPin2, turnOn, CHANGE);
+  
   Serial.println("Welcome!");
+
+  if(digitalRead(2) == HIGH)
+  {
+    debug = "High";
+  }else
+  {
+    debug = "Low";
+  }
+  
+  Serial.println("Pin 2: " + debug);
+  attachInterrupt(interruptPin2, switchMode, FALLING);
 
 }
 
 void loop()
 {
 
-  String action = "";
+  switch (state) {
+    case HIGH:
+      // Auto
+      String action = "";
+      
+//      if (switchFlag)
+//      {
+//        //Serial.println("Pin 2: " + debug);
+//        //digitalWrite(boardLed, LOW);
+//        switchFlag = false;
+//      }
 
-  if (serialFlag == true && stringComplete == true)
-  {
-    //If ets = "MOTR"
-
-    if (checkCommand(ets))
-    {
-
-      action = ets.substring(0, 4);
-
-      if (ets.endsWith("\n"))
+      if (serialFlag == true && stringComplete == true)
       {
-        ets.remove(ets.length() - 1, 1);
+        //If ets = "MOTR"
 
-      }
-
-      if (action == "MOTR")
-      {
-
-        if (ets.substring(5).toInt() == 1)
+        if (checkCommand(ets))
         {
-          digitalWrite(A0, HIGH);
-          digitalWrite(boardLed, HIGH);
-          Serial.println(ets + ",OK");
 
-        }
-        else if (ets.substring(5).toInt() == 0)
-        {
-          digitalWrite(A0, LOW);
-          digitalWrite(boardLed, LOW);
-          Serial.println(ets + ",OK");
+          action = ets.substring(0, 4);
+
+          if (ets.endsWith("\n"))
+          {
+            ets.remove(ets.length() - 1, 1);
+
+          }
+
+          if (action == "MOTR")
+          {
+
+            if (ets.substring(5).toInt() == 1)
+            {
+              digitalWrite(A0, HIGH);
+              digitalWrite(boardLed, HIGH);
+              Serial.println(ets + ",OK");
+
+            }
+            else if (ets.substring(5).toInt() == 0)
+            {
+              digitalWrite(A0, LOW);
+              digitalWrite(boardLed, LOW);
+              Serial.println(ets + ",OK");
+            }
+            else
+            {
+              Serial.println(ets + ",ERR");
+            }
+
+          }
+          else if (action == "MOIS")
+          {
+            //Read mois sensor
+            int moisValue = readMoistureSensor();
+
+            if (moisValue == -1)
+            {
+              Serial.println(action + ",ERR");
+            }
+            else
+            {
+              Serial.println(ets + "=" + moisValue + ",OK");
+            }
+
+          }
+          else if (action == "TEMP")
+          {
+            float tempHumValue = readHumTempSensor(ets.substring(5).toInt());
+
+            if (tempHumValue == -1)
+            {
+
+              Serial.println(ets + ",ERR");
+            }
+            else
+            {
+
+              Serial.print(action + "=");
+              Serial.print(tempHumValue);
+              Serial.println(",OK");
+
+            }
+          }
         }
         else
         {
+
           Serial.println(ets + ",ERR");
+
         }
 
+        //Set flag to false
+        Serial.flush();
+        ets = "";
+        serialFlag = false;
+        stringComplete = false;
       }
-      else if (action == "MOIS")
-      {
-        //Read mois sensor
-        int moisValue = readMoistureSensor();
 
-        if (moisValue == -1)
-        {
-          Serial.println(action + ",ERR");
-        }
-        else
-        {
-          Serial.println(ets + "=" + moisValue + ",OK");
-        }
+      break;
+    case LOW:
+      // Manual mode
+      digitalWrite(boardLed, HIGH);
 
-      }
-      else if (action == "TEMP")
-      {
-        float tempHumValue = readHumTempSensor(ets.substring(5).toInt());
+//      if (switchFlag)
+//      {
+//        Serial.println("Pin 2: " + debug);        
+//        switchFlag = false;
+//      }
 
-        if (tempHumValue == -1)
-        {
-
-          Serial.println(ets + ",ERR");
-        }
-        else
-        {
-
-          Serial.print(action + "=");
-          Serial.print(tempHumValue);
-          Serial.println(",OK");
-
-        }
-      }
-    }
-    else
-    {
-
-      Serial.println(ets + ",ERR");
-
-    }
-
-    //Set flag to false
-    Serial.flush();
-    ets = "";
-    serialFlag = false;
-    stringComplete = false;
+      break;
+    default:
+      // statements
+      break;
   }
+
+
+
 }
 
 void serialEvent() {
   //statements
-  while (Serial.available()) {
-    // get the new byte:
-    char rec = (char)Serial.read();
-    // add it to the inputString:
-    ets += rec;
-    if (rec == '\n') {
-      stringComplete = true;
+ 
+    while (Serial.available()) {
+      // get the new byte:
+      char rec = (char)Serial.read();
+      // add it to the inputString:
+      ets += rec;
+      if (rec == '\n') {
+        stringComplete = true;
+      }
+      serialFlag = true;
     }
-    serialFlag = true;
-  }
+  
+
 }
 
 boolean checkCommand(String in)
@@ -182,5 +227,21 @@ float readHumTempSensor(int action)
   }
 
   return humTempValue;
+
+}
+
+void switchMode() {
+  state = digitalRead(2);
+  switchFlag = true;
+
+  if(digitalRead(2) == HIGH)
+  {
+    debug = "High";
+  }else
+  {
+    debug = "Low";
+  }
+
+  Serial.println("Pin 2: " + debug);  
 
 }
