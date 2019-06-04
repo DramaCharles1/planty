@@ -1,34 +1,77 @@
 from time import sleep
 from plantyData import PlantyData
 import serial
+import sys
+
+motor=-1
+mois = -1
+temp = -1
+hum = -1
+plant = "default"
 
 
-ser = serial.Serial('/dev/ttyACM0', 9600) # Establish the connection on a specific port
-#counter = 32 # Below 32 everything in ASCII is gibberish
-ser.flush()
-sleep(1)
 
-data = PlantyData(0,0,25,40)
-
-print "motor: " + data.motor
-
+def checkOK(rec):
+	ok = "OK"
+	err = "ERR"
 	
-
-while ser.in_waiting > 0:
-	print ser.readline()
-	sleep(1)
+	if("OK" in rec):
+		return True
+	elif ("ERR" in rec):
+		return False
+	else:
+		raise Exception("Not a valid command recieved")
 	
-ser.write("MOIS"+'\n')
-sleep(1)
+def getCommandValue(rec):
+	separator = ['=',',','\n']
+	
+	rec = rec.replace('=',',')
+	value = rec.split(',')
+	
+	return value[1]
 
-while ser.in_waiting > 0:
-	print ser.readline()
-	sleep(1)
+#Main
+try:
+	ser = serial.Serial('/dev/ttyACM0', 9600) 
+	
+	sleep(5)
+	
+	ser.write("PLANT"+'\n')
+	sleep(2)
 
-#while True:
-#     counter +=1
-#     ser.write(str(chr(counter))) # Convert the decimal number to ASCII then send it to the Arduino
-#     print ser.readline() # Read the newest output from the Arduino
-#     sleep(1) # Delay for one tenth of a second
-#     if counter == 255:
-#		counter = 32
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+	
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+				
+	plant = getCommandValue(rec)
+	
+	rec = ""
+	
+	ser.write("MOIS"+'\n')
+	sleep(2)
+
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+		
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+		
+	mois = getCommandValue(rec)
+	
+	#def __init__(self, motor, moisture, temperature, humidity, plant):			
+	data = PlantyData(motor,mois,temp,hum,plant)
+	
+	ser.flush()
+	ser.close()
+	
+except serial.SerialException, e:
+	
+	if "could not open port" in str(e):
+		print "Port busy! Please change port"
+	else:
+		print str(e)
+		
+print "Plant: " + data.plant
+print "Moisture: " + data.moistur

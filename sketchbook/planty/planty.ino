@@ -1,4 +1,5 @@
 #include <dht.h>
+//#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
 int motorTranPin = A0;
@@ -13,10 +14,12 @@ volatile char rec = 'o';
 volatile char sen = 'o';
 
 String ets = "";
-String debug = "false";
+char sep[3] = {'=', ',', '\n'};
+
+String plant = "Basil";
+
 boolean stringComplete = false;
 boolean serialFlag = false;
-boolean switchFlag = false;
 
 dht DHT;
 
@@ -29,166 +32,125 @@ void setup()
   digitalWrite(motorTranPin, LOW);  // turn off the motor
 
   pinMode(2, INPUT_PULLUP);
-  
-  Serial.println("Welcome!");
-
-  if(digitalRead(2) == HIGH)
-  {
-    debug = "High";
-  }else
-  {
-    debug = "Low";
-  }
-  
-  Serial.println("Pin 2: " + debug);
-  attachInterrupt(interruptPin2, switchMode, FALLING);
+  //attachInterrupt(interruptPin2, turnOn, CHANGE);
+  //Serial.println("Welcome!");
 
 }
 
 void loop()
 {
 
-  switch (state) {
-    case HIGH:
-      // Auto
-      String action = "";
-      
-//      if (switchFlag)
-//      {
-//        //Serial.println("Pin 2: " + debug);
-//        //digitalWrite(boardLed, LOW);
-//        switchFlag = false;
-//      }
+  String action = "";
 
-      if (serialFlag == true && stringComplete == true)
+  if (serialFlag == true && stringComplete == true)
+  {
+    //If ets = "MOTR"
+
+    if (checkCommand(ets))
+    {
+
+      String action = getAction(ets);
+
+      if (ets.endsWith("\n"))
       {
-        //If ets = "MOTR"
+        ets.remove(ets.length() - 1, 1);
 
-        if (checkCommand(ets))
+      }
+
+      if (action == "MOTR")
+      {
+
+        if (ets.substring(5).toInt() == 1)
+        {
+          digitalWrite(A0, HIGH);
+          digitalWrite(boardLed, HIGH);
+          Serial.println(ets + ",OK");
+
+        }
+        else if (ets.substring(5).toInt() == 0)
+        {
+          digitalWrite(A0, LOW);
+          digitalWrite(boardLed, LOW);
+          Serial.println(ets + ",OK");
+        }
+        else
+        {
+          Serial.println(ets + ",ERR");
+        }
+
+      }
+      else if (action == "MOIS")
+      {
+        //Read mois sensor
+        int moisValue = readMoistureSensor();
+
+        if (moisValue == -1)
+        {
+          Serial.println(action + ",ERR");
+        }
+        else
+        {
+          Serial.println(ets + "=" + moisValue + ",OK");
+        }
+
+      }
+      else if (action == "TEMP")
+      {
+        float tempHumValue = readHumTempSensor(ets.substring(5).toInt());
+
+        if (tempHumValue == -1)
         {
 
-          action = ets.substring(0, 4);
-
-          if (ets.endsWith("\n"))
-          {
-            ets.remove(ets.length() - 1, 1);
-
-          }
-
-          if (action == "MOTR")
-          {
-
-            if (ets.substring(5).toInt() == 1)
-            {
-              digitalWrite(A0, HIGH);
-              digitalWrite(boardLed, HIGH);
-              Serial.println(ets + ",OK");
-
-            }
-            else if (ets.substring(5).toInt() == 0)
-            {
-              digitalWrite(A0, LOW);
-              digitalWrite(boardLed, LOW);
-              Serial.println(ets + ",OK");
-            }
-            else
-            {
-              Serial.println(ets + ",ERR");
-            }
-
-          }
-          else if (action == "MOIS")
-          {
-            //Read mois sensor
-            int moisValue = readMoistureSensor();
-
-            if (moisValue == -1)
-            {
-              Serial.println(action + ",ERR");
-            }
-            else
-            {
-              Serial.println(ets + "=" + moisValue + ",OK");
-            }
-
-          }
-          else if (action == "TEMP")
-          {
-            float tempHumValue = readHumTempSensor(ets.substring(5).toInt());
-
-            if (tempHumValue == -1)
-            {
-
-              Serial.println(ets + ",ERR");
-            }
-            else
-            {
-
-              Serial.print(action + "=");
-              Serial.print(tempHumValue);
-              Serial.println(",OK");
-
-            }
-          }
+          Serial.println(ets + ",ERR");
         }
         else
         {
 
-          Serial.println(ets + ",ERR");
+          Serial.print(action + "=");
+          Serial.print(tempHumValue);
+          Serial.println(",OK");
 
         }
-
-        //Set flag to false
-        Serial.flush();
-        ets = "";
-        serialFlag = false;
-        stringComplete = false;
       }
+      else if (action == "PLANT")
+      {
+        Serial.println(action + "=" + plant + ",OK");
+      }
+    }
+    else
+    {
+      Serial.println(ets + ",ERR");
+    }
 
-      break;
-    case LOW:
-      // Manual mode
-      digitalWrite(boardLed, HIGH);
-
-//      if (switchFlag)
-//      {
-//        Serial.println("Pin 2: " + debug);        
-//        switchFlag = false;
-//      }
-
-      break;
-    default:
-      // statements
-      break;
+    //Set flag to false
+    Serial.flush();
+    ets = "";
+    serialFlag = false;
+    stringComplete = false;
   }
-
-
-
 }
 
 void serialEvent() {
   //statements
- 
-    while (Serial.available()) {
-      // get the new byte:
-      char rec = (char)Serial.read();
-      // add it to the inputString:
-      ets += rec;
-      if (rec == '\n') {
-        stringComplete = true;
-      }
-      serialFlag = true;
+  while (Serial.available()) {
+    // get the new byte:
+    char rec = (char)Serial.read();
+    // add it to the inputString:
+    ets += rec;
+    if (rec == '\n') {
+      stringComplete = true;
     }
-  
-
+    serialFlag = true;
+  }
 }
 
 boolean checkCommand(String in)
 {
-  String action = in.substring(0, 4);
+  //String action = in.substring(0, 4);
 
+  String action = getAction(in);
 
-  if (action == "MOTR" || action == "MOIS" || action == "TEMP")
+  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT")
   {
     return true;
   }
@@ -230,18 +192,20 @@ float readHumTempSensor(int action)
 
 }
 
-void switchMode() {
-  state = digitalRead(2);
-  switchFlag = true;
+String getAction(String in)
+{
+  String action = "nope!";
 
-  if(digitalRead(2) == HIGH)
+  if (in.indexOf(sep[0]) != -1)
   {
-    debug = "High";
-  }else
+    action = in.substring(0, in.indexOf(sep[0]));
+
+  } else
   {
-    debug = "Low";
+    action = in.substring(0, in.indexOf(sep[2]));
+
   }
 
-  Serial.println("Pin 2: " + debug);  
+  return action;
 
 }
