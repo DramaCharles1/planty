@@ -71,6 +71,20 @@ void loop()
           Serial.println(ets + ",OK");
 
         }
+        else if (ets.substring(5).toInt() == 2)
+        {
+          int motor =-1;
+          
+          if(digitalRead(motorTranPin) == HIGH)
+          {
+            motor = 1;
+          }else
+          {
+            motor = 0;
+          }
+
+          Serial.println(action + "="+ motor + ",OK");
+        }
         else if (ets.substring(5).toInt() == 0)
         {
           digitalWrite(A0, LOW);

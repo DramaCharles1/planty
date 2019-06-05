@@ -9,8 +9,6 @@ temp = -1
 hum = -1
 plant = "default"
 
-
-
 def checkOK(rec):
 	ok = "OK"
 	err = "ERR"
@@ -32,11 +30,11 @@ def getCommandValue(rec):
 
 #Main
 try:
-	ser = serial.Serial('/dev/ttyACM0', 9600) 
+	ser = serial.Serial('/dev/ttyACM1', 9600) 
 	
 	sleep(5)
 	
-	ser.write("PLANT"+'\n')
+	ser.write("PLANT=1"+'\n')
 	sleep(2)
 
 	while ser.in_waiting > 0:
@@ -60,6 +58,28 @@ try:
 		
 	mois = getCommandValue(rec)
 	
+	ser.write("TEMP=1"+'\n')
+	sleep(2)
+
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+		
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+		
+	temp = getCommandValue(rec)
+	
+	ser.write("TEMP=2"+'\n')
+	sleep(2)
+
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+		
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+		
+	hum = getCommandValue(rec)
+	
 	#def __init__(self, motor, moisture, temperature, humidity, plant):			
 	data = PlantyData(motor,mois,temp,hum,plant)
 	
@@ -74,4 +94,6 @@ except serial.SerialException, e:
 		print str(e)
 		
 print "Plant: " + data.plant
-print "Moisture: " + data.moistur
+print "Moisture: " + data.moisture
+print "Moisture: " + data.temperature
+print "Moisture: " + data.humidity

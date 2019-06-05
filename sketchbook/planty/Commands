@@ -1,6 +1,6 @@
 Send:
 MOTR=<parameter>
-<parameter>: 1=On, 2=Off
+<parameter>: 1=On, 2=Off, 2=Check if on/off (1=on,0=off)
 Return:
 MOTR=<parameter>,OK if success
 MOTR,ERR if error
