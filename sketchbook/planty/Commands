@@ -24,3 +24,8 @@ PLANT=<parameter>,<string>
 return:
 PLANT=<string>,OK
 PLANT,ERR if error
+
+Send: 
+ALS
+return:
+ALS=<parameter>,OK
