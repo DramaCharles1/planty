@@ -152,6 +152,10 @@ void loop()
           
           Serial.println(ets + ",ERR");     
         }
+      }else if(action == "ALS")
+      {
+        int ALSval = 0;
+        Serial.println(action + "=" + ALSval + ",OK");  
       }
     }
     else
@@ -187,7 +191,7 @@ boolean checkCommand(String in)
 
   String action = getAction(in);
 
-  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT")
+  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT" || action == "ALS")
   {
     return true;
   }

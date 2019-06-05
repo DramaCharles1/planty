@@ -7,6 +7,7 @@ motor=-1
 mois = -1
 temp = -1
 hum = -1
+ALS = -1
 plant = "default"
 
 def checkOK(rec):
@@ -99,11 +100,24 @@ try:
 	
 	rec = ""
 	
-	#def __init__(self, motor, moisture, temperature, humidity, plant):			
-	data = PlantyData(motor,mois,temp,hum,plant)
+	ser.write("ALS"+'\n')
+	sleep(0.5)
+
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+		
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+		
+	ALS = getCommandValue(rec)
+	
+	rec = ""	
 	
 	ser.flush()
 	ser.close()
+	
+	#def __init__(self, motor, moisture, temperature, humidity, plant):			
+	data = PlantyData(motor,mois,temp,hum,plant,ALS)
 	
 except serial.SerialException, e:
 	
@@ -118,4 +132,5 @@ print "Moisture: " + data.moisture
 print "Temperature: " + data.temperature
 print "Humidity: " + data.humidity
 print "Motor: " + data.motor
+print "ALS: " + data.ALS
 print "Time stamp: " + str(data.timeStamp)
