@@ -29,7 +29,7 @@ dht DHT;
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(57600);
   pinMode(motorTranPin, OUTPUT); // A0
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);

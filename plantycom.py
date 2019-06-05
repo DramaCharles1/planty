@@ -30,12 +30,25 @@ def getCommandValue(rec):
 
 #Main
 try:
-	ser = serial.Serial('/dev/ttyACM1', 9600) 
+	ser = serial.Serial('/dev/ttyACM1', 57600) 
 	
-	sleep(5)
+	sleep(2)
+	
+	ser.write("TEMP=2"+'\n')
+	sleep(0.5)
+
+	while ser.in_waiting > 0:
+		rec = ser.readline()
+		
+	if not(checkOK(rec)):
+		raise Exception("Command: " + rec + "returned an error")
+		
+	hum = getCommandValue(rec)
+	
+	rec = ""
 	
 	ser.write("PLANT=1"+'\n')
-	sleep(2)
+	sleep(0.5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
@@ -48,7 +61,7 @@ try:
 	rec = ""
 	
 	ser.write("MOIS"+'\n')
-	sleep(2)
+	sleep(0.5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
@@ -58,8 +71,10 @@ try:
 		
 	mois = getCommandValue(rec)
 	
+	rec = ""
+	
 	ser.write("TEMP=1"+'\n')
-	sleep(2)
+	sleep(0.5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
@@ -69,8 +84,10 @@ try:
 		
 	temp = getCommandValue(rec)
 	
-	ser.write("TEMP=2"+'\n')
-	sleep(2)
+	rec = ""	
+	
+	ser.write("MOTR=2"+'\n')
+	sleep(0.5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
@@ -78,7 +95,9 @@ try:
 	if not(checkOK(rec)):
 		raise Exception("Command: " + rec + "returned an error")
 		
-	hum = getCommandValue(rec)
+	motor = getCommandValue(rec)
+	
+	rec = ""
 	
 	#def __init__(self, motor, moisture, temperature, humidity, plant):			
 	data = PlantyData(motor,mois,temp,hum,plant)
@@ -90,10 +109,13 @@ except serial.SerialException, e:
 	
 	if "could not open port" in str(e):
 		print "Port busy! Please change port"
+		sys.exit()
 	else:
 		print str(e)
 		
 print "Plant: " + data.plant
 print "Moisture: " + data.moisture
-print "Moisture: " + data.temperature
-print "Moisture: " + data.humidity
+print "Temperature: " + data.temperature
+print "Humidity: " + data.humidity
+print "Motor: " + data.motor
+print "Time stamp: " + str(data.timeStamp)

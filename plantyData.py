@@ -1,5 +1,5 @@
 #Data class
-from datetime import time
+from datetime import datetime
 
 class PlantyData:
 	
@@ -9,6 +9,8 @@ class PlantyData:
 		self.temperature = temperature
 		self.humidity = humidity
 		self.plant = plant
+		self.timeStamp = datetime.now().replace(microsecond=0).isoformat()
+		
 		#self.dateAndTime = DateTime.now()
 		
 					
