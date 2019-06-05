@@ -17,3 +17,10 @@ TEMP=<parameter>
 Return:
 TEMP=<parameter>,<value>,OK
 TEMP,ERR if error
+
+Send:
+PLANT=<parameter>,<string>
+<parameter>: 1=read plant data from EEPROM, 2=write plant data to EEPROM
+return:
+PLANT=<string>,OK
+PLANT,ERR if error

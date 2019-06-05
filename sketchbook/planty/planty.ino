@@ -1,4 +1,6 @@
 #include <dht.h>
+#include <EEPROM.h>
+
 //#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
@@ -9,6 +11,8 @@ int tempSensorPin = A3;
 int boardLed = 13;
 int interruptPin2 = 0; //switch interrupt
 
+int addr = 0;
+
 volatile byte state = LOW;
 volatile char rec = 'o';
 volatile char sen = 'o';
@@ -16,7 +20,7 @@ volatile char sen = 'o';
 String ets = "";
 char sep[3] = {'=', ',', '\n'};
 
-String plant = "Basil";
+//String plant = "Nothing yet :(";
 
 boolean stringComplete = false;
 boolean serialFlag = false;
@@ -114,7 +118,26 @@ void loop()
       }
       else if (action == "PLANT")
       {
-        Serial.println(action + "=" + plant + ",OK");
+        if(ets.indexOf('1') != -1)
+        {
+          //read plant info from eeprom
+          String temp = read_String(0);
+          Serial.println(action + "=" + temp + ",OK");
+          
+        }else if(ets.indexOf('2') != -1)
+        {
+          String plant = ets.substring(ets.indexOf(sep[1])+1);
+
+          writeString(0,plant);
+          delay(200);
+          String temp = read_String(0);
+          
+          Serial.println(action + "=" + temp + ",OK");
+        }else
+        {
+          
+          Serial.println(ets + ",ERR");     
+        }
       }
     }
     else
@@ -208,4 +231,32 @@ String getAction(String in)
 
   return action;
 
+}
+
+void writeString(char add,String data)
+{
+  int _size = data.length();
+  int i;
+  for(i=0;i<_size;i++)
+  {
+    EEPROM.write(add+i,data[i]);
+  }
+  EEPROM.write(add+_size,'\0');   //Add termination null character for String Data
+}
+
+String read_String(char add)
+{
+  int i;
+  char data[100]; //Max 100 Bytes
+  int len=0;
+  unsigned char k;
+  k=EEPROM.read(add);
+  while(k != '\0' && len<500)   //Read until null character
+  {    
+    k=EEPROM.read(add+len);
+    data[len]=k;
+    len++;
+  }
+  data[len]='\0';
+  return String(data);
 }
