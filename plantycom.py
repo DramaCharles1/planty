@@ -1,5 +1,6 @@
 from time import sleep
 from plantyData import PlantyData
+from dbConnect import DBConnect
 import serial
 import sys
 
@@ -31,7 +32,7 @@ def getCommandValue(rec):
 
 #Main
 try:
-	ser = serial.Serial('/dev/ttyACM1', 57600) 
+	ser = serial.Serial('/dev/ttyACM0', 57600) 
 	
 	sleep(2)
 	
@@ -116,9 +117,6 @@ try:
 	ser.flush()
 	ser.close()
 	
-	#def __init__(self, motor, moisture, temperature, humidity, plant):			
-	data = PlantyData(motor,mois,temp,hum,plant,ALS)
-	
 except serial.SerialException, e:
 	
 	if "could not open port" in str(e):
@@ -126,11 +124,25 @@ except serial.SerialException, e:
 		sys.exit()
 	else:
 		print str(e)
+	
+#def __init__(self, motor, moisture, temperature, humidity, plant):			
+data = PlantyData(motor,mois,temp,hum,plant,ALS)
 		
 print "Plant: " + data.plant
+print type(data.plant)
 print "Moisture: " + data.moisture
+print type(data.plant)
 print "Temperature: " + data.temperature
+print type(data.plant)
 print "Humidity: " + data.humidity
+print type(data.plant)
 print "Motor: " + data.motor
+print type(data.plant)
 print "ALS: " + data.ALS
+print type(data.plant)
 print "Time stamp: " + str(data.timeStamp)
+print type(data.plant)
+
+db = DBConnect("localhost","root","password")
+
+print db
