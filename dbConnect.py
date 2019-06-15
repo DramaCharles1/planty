@@ -1,13 +1,14 @@
-import mysql.connector
+from mysql.connector import MySQLConnection, Error
 
 class DBConnect:
 	#static DB
 	
-	def __init__(self,host,user,password):
+	def __init__(self,host,user,password,table):
 		self.host = host
 		self.user = user
-		self.password = password
-		
+		self.password = password	
+		self.table = table
+			
 	
 	def connectDB(self):
 		try:
@@ -15,6 +16,7 @@ class DBConnect:
 			host=self.host,
 			user=self.user,
 			password=self.password
+			table=self.table
 			)
 			
 		except MySQL.connector.Error as e:

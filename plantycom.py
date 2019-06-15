@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+
 from time import sleep
 from plantyData import PlantyData
-from dbConnect import DBConnect
 import serial
 import sys
+import mysql.connector
+from mysql.connector import errorcode
 
 motor=-1
 mois = -1
@@ -35,6 +38,9 @@ try:
 	ser = serial.Serial('/dev/ttyACM0', 57600) 
 	
 	sleep(2)
+	
+	ser.write("MOTR=0"+'\n')
+	sleep(0.5)
 	
 	ser.write("TEMP=2"+'\n')
 	sleep(0.5)
@@ -114,6 +120,12 @@ try:
 	
 	rec = ""	
 	
+	if(mois < 100):
+		ser.write("MOTR=1"+'\n')
+		sleep(5)
+		ser.write("MOTR=0"+'\n')
+		sleep(0.5)
+	
 	ser.flush()
 	ser.close()
 	
@@ -129,20 +141,44 @@ except serial.SerialException, e:
 data = PlantyData(motor,mois,temp,hum,plant,ALS)
 		
 print "Plant: " + data.plant
-print type(data.plant)
+#print type(data.plant)
 print "Moisture: " + data.moisture
-print type(data.plant)
+#print type(data.moisture)
 print "Temperature: " + data.temperature
-print type(data.plant)
+#print type(data.temperature)
 print "Humidity: " + data.humidity
-print type(data.plant)
+#print type(data.humidity)
 print "Motor: " + data.motor
-print type(data.plant)
+#print type(data.motor)
 print "ALS: " + data.ALS
-print type(data.plant)
+#print type(data.ALS)
 print "Time stamp: " + str(data.timeStamp)
-print type(data.plant)
+#print type(data.timeStamp)
 
-db = DBConnect("localhost","root","password")
+try:
 
-print db
+	conn = mysql.connector.connect(
+			host= 'localhost',
+			user= 'root',
+			password= 'password',
+			database= 'planty'
+			)
+			
+	#print(conn)
+	myCursor = conn.cursor()
+	
+	#INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
+	
+	insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+	
+	data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
+	myCursor.execute(insert_stmt, data)
+	myCursor.close()
+	
+	conn.commit()
+	conn.close()
+			
+except mysql.connector.Error as e:
+	print("Something went wrong: {}".format(e))
+	
+
