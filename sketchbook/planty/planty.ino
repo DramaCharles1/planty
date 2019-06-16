@@ -4,7 +4,7 @@
 //#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
-int motorTranPin = A0;
+int motorTranPin = 3;
 int moisSensorTranPin = A1;
 int sensorPin = A2;
 int tempSensorPin = A3;
@@ -12,6 +12,7 @@ int boardLed = 13;
 int interruptPin2 = 0; //switch interrupt
 
 int addr = 0;
+float power = 0;
 
 volatile byte state = LOW;
 volatile char rec = 'o';
@@ -30,10 +31,11 @@ dht DHT;
 void setup()
 {
   Serial.begin(57600);
-  pinMode(motorTranPin, OUTPUT); // A0
+  pinMode(motorTranPin, OUTPUT); 
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);
-  digitalWrite(motorTranPin, LOW);  // turn off the motor
+  //digitalWrite(motorTranPin, LOW);  // turn off the motor
+  analogWrite(motorTranPin,0); //power off
 
   pinMode(2, INPUT_PULLUP);
   //attachInterrupt(interruptPin2, turnOn, CHANGE);
@@ -48,7 +50,6 @@ void loop()
 
   if (serialFlag == true && stringComplete == true)
   {
-    //If ets = "MOTR"
 
     if (checkCommand(ets))
     {
@@ -64,30 +65,32 @@ void loop()
       if (action == "MOTR")
       {
 
-        if (ets.substring(5).toInt() == 1)
+        if (ets.substring(5,6).toInt() == 1)
         {
-          digitalWrite(A0, HIGH);
-          digitalWrite(boardLed, HIGH);
-          Serial.println(ets + ",OK");
 
-        }
-        else if (ets.substring(5).toInt() == 2)
-        {
-          int motor =-1;
-          
-          if(digitalRead(motorTranPin) == HIGH)
+          if(ets.substring(7).toFloat() < 100.00 && ets.substring(7).toFloat() > 0)
           {
-            motor = 1;
+            power = ets.substring(7).toFloat();
+
+            analogWrite(motorTranPin, power*(255.00/100.00));
+            digitalWrite(boardLed, HIGH);
+            Serial.println(ets + ",OK");
           }else
           {
-            motor = 0;
+            Serial.println(ets + ",ERR");
           }
 
-          Serial.println(action + "="+ motor + ",OK");
         }
-        else if (ets.substring(5).toInt() == 0)
+        else if (ets.substring(5,6).toInt() == 2)
         {
-          digitalWrite(A0, LOW);
+
+          Serial.println(action + "="+ power + ",OK");
+        }
+        else if (ets.substring(5,6).toInt() == 0)
+        {
+          power = 0.00;
+          
+          analogWrite(motorTranPin, power);
           digitalWrite(boardLed, LOW);
           Serial.println(ets + ",OK");
         }
