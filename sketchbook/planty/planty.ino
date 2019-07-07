@@ -13,6 +13,7 @@ int interruptPin2 = 0; //switch interrupt
 
 int addr = 0;
 float power = 0;
+int duration = 0;
 
 volatile byte state = LOW;
 volatile char rec = 'o';
@@ -68,12 +69,20 @@ void loop()
         if (ets.substring(5,6).toInt() == 1)
         {
 
-          if(ets.substring(7).toFloat() < 100.00 && ets.substring(7).toFloat() > 0)
+          if(ets.substring(7).toFloat() < 101.00 && ets.substring(7).toFloat() > 0)
           {
-            power = ets.substring(7).toFloat();
-
+            power = ets.substring(7,ets.indexOf(',',7)).toFloat();
+            
+            duration = ets.substring(ets.indexOf(',',7)+1).toInt();
+            
             analogWrite(motorTranPin, power*(255.00/100.00));
             digitalWrite(boardLed, HIGH);
+
+            delay(duration);
+
+            analogWrite(motorTranPin, 0);
+            digitalWrite(boardLed, LOW);
+            
             Serial.println(ets + ",OK");
           }else
           {

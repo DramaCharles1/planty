@@ -14,6 +14,9 @@ hum = -1
 ALS = -1
 plant = "default"
 
+duration = 5000 #ms
+power = 99 #%
+
 def checkOK(rec):
 	ok = "OK"
 	err = "ERR"
@@ -23,7 +26,7 @@ def checkOK(rec):
 	elif ("ERR" in rec):
 		return False
 	else:
-		raise Exception("Not a valid command recieved")
+		raise Exception("Not a valid command recieved" + "rec: " + rec)
 	
 def getCommandValue(rec):
 	separator = ['=',',','\n']
@@ -94,18 +97,18 @@ try:
 	
 	rec = ""	
 	
-	ser.write("MOTR=2"+'\n')
-	sleep(0.5)
+	#ser.write("MOTR=2"+'\n')
+	#sleep(0.5)
 
-	while ser.in_waiting > 0:
-		rec = ser.readline()
+	#while ser.in_waiting > 0:
+	#	rec = ser.readline()
 		
-	if not(checkOK(rec)):
-		raise Exception("Command: " + rec + "returned an error")
+	#if not(checkOK(rec)):
+	#	raise Exception("Command: " + rec + "returned an error")
 		
-	motor = getCommandValue(rec)
+	#motor = getCommandValue(rec)
 	
-	rec = ""
+	#rec = ""
 	
 	ser.write("ALS"+'\n')
 	sleep(0.5)
@@ -120,12 +123,26 @@ try:
 	
 	rec = ""	
 	
-	if(mois < 100):
-		ser.write("MOTR=1"+'\n')
-		sleep(5)
-		ser.write("MOTR=0"+'\n')
-		sleep(0.5)
-	
+	if(int(mois) < 400):
+		
+		#ser.write("MOTR=1,99,5000"+'\n')
+		
+		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
+		
+		#motor = "99,5000"
+		motor = str(power)+","+str(duration)
+
+		sleep(duration/1000)
+		
+		#while ser.in_waiting > 0:
+		#	rec = ser.readline()
+			
+		#print rec
+		
+		#if not(checkOK(rec)):
+		#	raise Exception("Command: " + rec + "returned an error")
+	else:
+		motor = "0"
 	ser.flush()
 	ser.close()
 	
