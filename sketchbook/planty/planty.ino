@@ -14,6 +14,7 @@ int interruptPin2 = 0; //switch interrupt
 int addr = 0;
 float power = 0;
 int duration = 0;
+int samples = 0;
 
 volatile byte state = LOW;
 volatile char rec = 'o';
@@ -32,11 +33,11 @@ dht DHT;
 void setup()
 {
   Serial.begin(57600);
-  pinMode(motorTranPin, OUTPUT); 
+  pinMode(motorTranPin, OUTPUT);
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
-  analogWrite(motorTranPin,0); //power off
+  analogWrite(motorTranPin, 0); //power off
 
   pinMode(2, INPUT_PULLUP);
   //attachInterrupt(interruptPin2, turnOn, CHANGE);
@@ -66,39 +67,39 @@ void loop()
       if (action == "MOTR")
       {
 
-        if (ets.substring(5,6).toInt() == 1)
+        if (ets.substring(5, 6).toInt() == 1)
         {
 
-          if(ets.substring(7).toFloat() < 101.00 && ets.substring(7).toFloat() > 0)
+          if (ets.substring(7).toFloat() < 101.00 && ets.substring(7).toFloat() > 0)
           {
-            power = ets.substring(7,ets.indexOf(',',7)).toFloat();
-            
-            duration = ets.substring(ets.indexOf(',',7)+1).toInt();
-            
-            analogWrite(motorTranPin, power*(255.00/100.00));
+            power = ets.substring(7, ets.indexOf(',', 7)).toFloat();
+
+            duration = ets.substring(ets.indexOf(',', 7) + 1).toInt();
+
+            analogWrite(motorTranPin, power * (255.00 / 100.00));
             digitalWrite(boardLed, HIGH);
 
             delay(duration);
 
             analogWrite(motorTranPin, 0);
             digitalWrite(boardLed, LOW);
-            
+
             Serial.println(ets + ",OK");
-          }else
+          } else
           {
             Serial.println(ets + ",ERR");
           }
 
         }
-        else if (ets.substring(5,6).toInt() == 2)
+        else if (ets.substring(5, 6).toInt() == 2)
         {
 
-          Serial.println(action + "="+ power + ",OK");
+          Serial.println(action + "=" + power + ",OK");
         }
-        else if (ets.substring(5,6).toInt() == 0)
+        else if (ets.substring(5, 6).toInt() == 0)
         {
           power = 0.00;
-          
+
           analogWrite(motorTranPin, power);
           digitalWrite(boardLed, LOW);
           Serial.println(ets + ",OK");
@@ -111,17 +112,34 @@ void loop()
       }
       else if (action == "MOIS")
       {
-        //Read mois sensor
-        int moisValue = readMoistureSensor();
+        samples = ets.substring(ets.indexOf('=') + 1).toInt();
 
-        if (moisValue == -1)
+        if (samples > 1)
         {
-          Serial.println(action + ",ERR");
-        }
-        else
+
+          int moisInc = 0;
+
+          for (int i = 1; i <= samples; i++) {
+
+            moisInc += readMoistureSensor();
+            delay(10);
+          }
+
+          float moisValue = moisInc / samples;
+
+          if (moisValue == -1.0)
+          {
+            Serial.println(action + ",ERR");
+          }
+          else
+          {
+            Serial.println(action + "=" + moisValue + ",OK");
+          }
+        }else
         {
-          Serial.println(ets + "=" + moisValue + ",OK");
+          Serial.println(ets + ",ERR");
         }
+
 
       }
       else if (action == "TEMP")
@@ -144,30 +162,30 @@ void loop()
       }
       else if (action == "PLANT")
       {
-        if(ets.indexOf('1') != -1)
+        if (ets.indexOf('1') != -1)
         {
           //read plant info from eeprom
           String temp = read_String(0);
           Serial.println(action + "=" + temp + ",OK");
-          
-        }else if(ets.indexOf('2') != -1)
-        {
-          String plant = ets.substring(ets.indexOf(sep[1])+1);
 
-          writeString(0,plant);
+        } else if (ets.indexOf('2') != -1)
+        {
+          String plant = ets.substring(ets.indexOf(sep[1]) + 1);
+
+          writeString(0, plant);
           delay(200);
           String temp = read_String(0);
-          
+
           Serial.println(action + "=" + temp + ",OK");
-        }else
+        } else
         {
-          
-          Serial.println(ets + ",ERR");     
+
+          Serial.println(ets + ",ERR");
         }
-      }else if(action == "ALS")
+      } else if (action == "ALS")
       {
         int ALSval = 0;
-        Serial.println(action + "=" + ALSval + ",OK");  
+        Serial.println(action + "=" + ALSval + ",OK");
       }
     }
     else
@@ -263,30 +281,30 @@ String getAction(String in)
 
 }
 
-void writeString(char add,String data)
+void writeString(char add, String data)
 {
   int _size = data.length();
   int i;
-  for(i=0;i<_size;i++)
+  for (i = 0; i < _size; i++)
   {
-    EEPROM.write(add+i,data[i]);
+    EEPROM.write(add + i, data[i]);
   }
-  EEPROM.write(add+_size,'\0');   //Add termination null character for String Data
+  EEPROM.write(add + _size, '\0'); //Add termination null character for String Data
 }
 
 String read_String(char add)
 {
   int i;
   char data[100]; //Max 100 Bytes
-  int len=0;
+  int len = 0;
   unsigned char k;
-  k=EEPROM.read(add);
-  while(k != '\0' && len<500)   //Read until null character
-  {    
-    k=EEPROM.read(add+len);
-    data[len]=k;
+  k = EEPROM.read(add);
+  while (k != '\0' && len < 500) //Read until null character
+  {
+    k = EEPROM.read(add + len);
+    data[len] = k;
     len++;
   }
-  data[len]='\0';
+  data[len] = '\0';
   return String(data);
 }

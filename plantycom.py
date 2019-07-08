@@ -16,6 +16,7 @@ plant = "default"
 
 duration = 5000 #ms
 power = 99 #%
+samples = 5
 
 def checkOK(rec):
 	ok = "OK"
@@ -71,8 +72,8 @@ try:
 	
 	rec = ""
 	
-	ser.write("MOIS"+'\n')
-	sleep(0.5)
+	ser.write("MOIS=" + str(samples) +'\n')
+	sleep(3)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
@@ -123,7 +124,7 @@ try:
 	
 	rec = ""	
 	
-	if(int(mois) < 400):
+	if(float(mois) < 400):
 		
 		#ser.write("MOTR=1,99,5000"+'\n')
 		

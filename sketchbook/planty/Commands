@@ -8,9 +8,10 @@ MOTR=<parameter>,[<power>],[<duration>],OK if success
 MOTR,ERR if error
 
 Send: 
-MOIS
+MOIS=<samples>
+<samples>: nmbr Int
 Return:
-MOIS=<value>,OK if success
+MOIS=<value>K if success
 MOIS,ERR if error
 
 Send:
