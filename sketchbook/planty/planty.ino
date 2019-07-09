@@ -114,7 +114,7 @@ void loop()
       {
         samples = ets.substring(ets.indexOf('=') + 1).toInt();
 
-        if (samples > 1)
+        if (samples > 0)
         {
 
           int moisInc = 0;
