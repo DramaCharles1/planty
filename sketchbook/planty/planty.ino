@@ -1,6 +1,8 @@
 #include <dht.h>
 #include <EEPROM.h>
+#include "Adafruit_VEML7700.h"
 
+Adafruit_VEML7700 veml = Adafruit_VEML7700();
 //#define DHT11PIN 2 //Maybe needs to change
 
 //I/O
@@ -27,6 +29,7 @@ char sep[3] = {'=', ',', '\n'};
 
 boolean stringComplete = false;
 boolean serialFlag = false;
+boolean ALSready = false;
 
 dht DHT;
 
@@ -49,6 +52,10 @@ void loop()
 {
 
   String action = "";
+  
+  if(ALSready == false){
+    startALS();
+  }
 
   if (serialFlag == true && stringComplete == true)
   {
@@ -184,8 +191,16 @@ void loop()
         }
       } else if (action == "ALS")
       {
-        int ALSval = 0;
-        Serial.println(action + "=" + ALSval + ",OK");
+        int ALSval = -1;
+
+        if (!ALSready) {
+          Serial.println(action + ",ERR");
+        }else{
+
+          ALSval = veml.readALS();
+          Serial.println(action + "=" + ALSval + ",OK");
+        }     
+        
       }
     }
     else
@@ -307,4 +322,17 @@ String read_String(char add)
   }
   data[len] = '\0';
   return String(data);
+}
+
+boolean startALS(){
+
+  if(veml.begin()){
+    ALSready = true;
+
+    veml.setGain(VEML7700_GAIN_1);
+    veml.setIntegrationTime(VEML7700_IT_800MS);
+  }else{
+    ALSready = false;
+  }
+  
 }

@@ -14,7 +14,7 @@ hum = -1
 ALS = -1
 plant = "default"
 
-duration = 5000 #ms
+duration = 10000 #ms
 power = 99 #%
 samples = 5
 
@@ -73,7 +73,7 @@ try:
 	rec = ""
 	
 	ser.write("MOIS=" + str(samples) +'\n')
-	sleep(3)
+	sleep(5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
