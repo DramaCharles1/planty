@@ -198,6 +198,15 @@ void loop()
         }else{
 
           ALSval = veml.readALS();
+
+          if(ALSval > 65535)
+          {
+            ALSval = 65535;
+          }else if(ALSval < -1)
+          {
+            ALSval = -1;
+          }
+          
           Serial.println(action + "=" + ALSval + ",OK");
         }     
         
@@ -329,7 +338,7 @@ boolean startALS(){
   if(veml.begin()){
     ALSready = true;
 
-    veml.setGain(VEML7700_GAIN_1);
+    veml.setGain(VEML7700_GAIN_1_8);
     veml.setIntegrationTime(VEML7700_IT_800MS);
   }else{
     ALSready = false;

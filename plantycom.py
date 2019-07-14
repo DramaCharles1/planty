@@ -14,9 +14,35 @@ hum = -1
 ALS = -1
 plant = "default"
 
-duration = 10000 #ms
-power = 99 #%
-samples = 5
+#plantycom.py duration power samples moisThres nightMode
+
+try: 
+	if(len(sys.argv) < 6):
+		raise Exception("Not enough arguements")
+	if(len(sys.argv) > 6):
+		raise Exception("Too many arguements")
+
+	#duration = 10000 #ms
+	duration = int(sys.argv[1])
+	#power = 99 #%
+	power = int(sys.argv[2])
+	#samples = 3
+	samples = int(sys.argv[3])
+	#moisThres = 400
+	moisThres = int(sys.argv[4])
+	nightMode = False
+	print ('Argument List:', str(sys.argv))
+	
+	if(int(sys.argv[5]) == 1):
+		nightMode = True
+	elif(int(sys.argv[5]) == 0):
+		nightMode = False
+	else:
+		raise ValueError("nightMode must be equal to 0 or 1")	
+
+except ValueError, e:
+	print str(e)
+	sys.exit()	
 
 def checkOK(rec):
 	ok = "OK"
@@ -124,11 +150,11 @@ try:
 	
 	rec = ""	
 	
-	if(float(mois) < 400):
+	if(float(mois) < moisThres and nightMode == True):
 		
 		#ser.write("MOTR=1,99,5000"+'\n')
 		
-		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
+		#ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
 		
 		#motor = "99,5000"
 		motor = str(power)+","+str(duration)
@@ -173,30 +199,31 @@ print "ALS: " + data.ALS
 print "Time stamp: " + str(data.timeStamp)
 #print type(data.timeStamp)
 
-try:
 
-	conn = mysql.connector.connect(
-			host= 'localhost',
-			user= 'root',
-			password= 'password',
-			database= 'planty'
-			)
+#try:
+
+	#conn = mysql.connector.connect(
+			#host= 'localhost',
+			#user= 'root',
+			#password= 'password',
+			#database= 'planty'
+			#)
 			
-	#print(conn)
-	myCursor = conn.cursor()
+	##print(conn)
+	#myCursor = conn.cursor()
 	
-	#INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
+	##INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
 	
-	insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+	#insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 	
-	data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
-	myCursor.execute(insert_stmt, data)
-	myCursor.close()
+	#data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
+	#myCursor.execute(insert_stmt, data)
+	#myCursor.close()
 	
-	conn.commit()
-	conn.close()
+	#conn.commit()
+	#conn.close()
 			
-except mysql.connector.Error as e:
-	print("Something went wrong: {}".format(e))
+#except mysql.connector.Error as e:
+	#print("Something went wrong: {}".format(e))
 	
 
