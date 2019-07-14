@@ -31,7 +31,6 @@ try:
 	#moisThres = 400
 	moisThres = int(sys.argv[4])
 	nightMode = False
-	print ('Argument List:', str(sys.argv))
 	
 	if(int(sys.argv[5]) == 1):
 		nightMode = True
@@ -154,7 +153,7 @@ try:
 		
 		#ser.write("MOTR=1,99,5000"+'\n')
 		
-		#ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
+		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
 		
 		#motor = "99,5000"
 		motor = str(power)+","+str(duration)
@@ -168,8 +167,10 @@ try:
 		
 		#if not(checkOK(rec)):
 		#	raise Exception("Command: " + rec + "returned an error")
-	else:
+	elif (float(mois) > moisThres and nightMode == True):
 		motor = "0"
+	else:
+		motor = "-1"
 	ser.flush()
 	ser.close()
 	
@@ -199,31 +200,30 @@ print "ALS: " + data.ALS
 print "Time stamp: " + str(data.timeStamp)
 #print type(data.timeStamp)
 
+try:
 
-#try:
-
-	#conn = mysql.connector.connect(
-			#host= 'localhost',
-			#user= 'root',
-			#password= 'password',
-			#database= 'planty'
-			#)
+	conn = mysql.connector.connect(
+			host= 'localhost',
+			user= 'root',
+			password= 'password',
+			database= 'planty'
+			)
 			
-	##print(conn)
-	#myCursor = conn.cursor()
+	#print(conn)
+	myCursor = conn.cursor()
 	
-	##INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
+	#INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
 	
-	#insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+	insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 	
-	#data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
-	#myCursor.execute(insert_stmt, data)
-	#myCursor.close()
+	data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
+	myCursor.execute(insert_stmt, data)
+	myCursor.close()
 	
-	#conn.commit()
-	#conn.close()
+	conn.commit()
+	conn.close()
 			
-#except mysql.connector.Error as e:
-	#print("Something went wrong: {}".format(e))
+except mysql.connector.Error as e:
+	print("Something went wrong: {}".format(e))
 	
 
