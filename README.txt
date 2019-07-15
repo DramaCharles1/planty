@@ -9,3 +9,8 @@ sudo apt install apache2
 
 install php7
 apt-get -y install php7.0 libapache2-mod-php7.0
+
+##plantycom.py duration power samples moisThres nightMode
+#*/60 * * * * python planty/plantycom.py >> ~/cron.log 2>&1
+*/60 8-23 * * * python planty/plantycom.py 10000 99 3 400 1 >> ~/cron.log 2>&1
+*/60 0-7 * * * python planty/plantycom.py 10000 99 3 400 0 >> ~/cron.log 2>&1
