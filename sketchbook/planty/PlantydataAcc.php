@@ -22,19 +22,27 @@
  * 
  */
 
+$servername = "localhost";
 $username="root";
 $password="password";
 $database="planty";
   
-mysql_connect(localhost,$username,$password);
-@mysql_select_db($database) or die( "Unable to select database");
+//mysql_connect(localhost,$username,$password);
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+echo "Connected successfully";
   
 $query="SELECT * FROM plantyLog";
-$result=mysql_query($query);
-  
+$result = $conn->query($sql);
+
+//this far
 $num=mysql_numrows($result);
   
-mysql_close();
+$conn->close();
   
 $tempValues = array();
   
