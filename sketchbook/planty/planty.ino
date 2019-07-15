@@ -191,20 +191,17 @@ void loop()
         }
       } else if (action == "ALS")
       {
-        int ALSval = -1;
+        uint16_t ALSval = 0;
 
         if (!ALSready) {
           Serial.println(action + ",ERR");
         }else{
-
+          
           ALSval = veml.readALS();
 
-          if(ALSval > 65535)
+          if(ALSval < 0)
           {
             ALSval = 65535;
-          }else if(ALSval < -1)
-          {
-            ALSval = -1;
           }
           
           Serial.println(action + "=" + ALSval + ",OK");

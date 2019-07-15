@@ -151,22 +151,10 @@ try:
 	
 	if(float(mois) < moisThres and nightMode == True):
 		
-		#ser.write("MOTR=1,99,5000"+'\n')
-		
 		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
-		
-		#motor = "99,5000"
 		motor = str(power)+","+str(duration)
-
 		sleep(duration/1000)
-		
-		#while ser.in_waiting > 0:
-		#	rec = ser.readline()
-			
-		#print rec
-		
-		#if not(checkOK(rec)):
-		#	raise Exception("Command: " + rec + "returned an error")
+
 	elif (float(mois) > moisThres and nightMode == True):
 		motor = "0"
 	else:
@@ -181,8 +169,7 @@ except serial.SerialException, e:
 		sys.exit()
 	else:
 		print str(e)
-	
-#def __init__(self, motor, moisture, temperature, humidity, plant):			
+		
 data = PlantyData(motor,mois,temp,hum,plant,ALS)
 		
 print "Plant: " + data.plant
