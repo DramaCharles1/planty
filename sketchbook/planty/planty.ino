@@ -196,7 +196,6 @@ void loop()
         if (!ALSready) {
           Serial.println(action + ",ERR");
         }else{
-          
           ALSval = veml.readALS();
 
           if(ALSval < 0)
