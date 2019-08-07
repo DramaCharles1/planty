@@ -11,6 +11,7 @@ class PlantyData:
 		self.plant = plant
 		self.timeStamp = datetime.now().replace(microsecond=0).isoformat()
 		self.ALS = ALS
+		self.runningNumber = -1
 		
 		#self.dateAndTime = DateTime.now()
 		
