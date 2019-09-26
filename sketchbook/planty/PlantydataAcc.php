@@ -36,14 +36,32 @@ if ($conn->connect_error) {
 }
 echo "Connected successfully";
   
-$query="SELECT * FROM plantyLog";
+$sql="SELECT * FROM plantyLog limit 20";
 $result = $conn->query($sql);
 
+$row = $result->fetch_assoc();
+printf ("%s %s\n", $row["plant"], $row["temperature"]);
+
+echo "Plant Motor Temperature Humidity ALS Moisture Datetime\n";
+
+while ($row = $result->fetch_assoc()) {
+        printf ("%s %s %s %s %s %s %s\n", $row["plant"], $row["motor"], $row["temperature"], $row["humidity"], $row["ALS"], $row["moisture"], $row["datetime"]);
+    }
+
+$result->free();
+
+//nmbr rows
+//while rows
+
+//printf("Select returned %s \n", $result);
+
+//var_dump($result);
+
 //this far
-$num=mysql_numrows($result);
+//$num=mysql_numrows($result);
   
 $conn->close();
-  
+/*  
 $tempValues = array();
   
 $i=0;
@@ -61,9 +79,9 @@ while ($i < $num)
 }
   
 echo json_encode($tempValues);
-
+*/
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
@@ -77,4 +95,4 @@ echo json_encode($tempValues);
 	
 </body>
 
-</html>
+</html>-->
