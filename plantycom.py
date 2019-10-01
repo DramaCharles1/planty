@@ -64,7 +64,7 @@ def getCommandValue(rec):
 
 #Main
 try:
-	ser = serial.Serial('/dev/ttyACM0', 57600) 
+	ser = serial.Serial('/dev/ttyACM1', 57600) 
 	
 	sleep(2)
 	
