@@ -36,7 +36,8 @@ if ($conn->connect_error) {
 }
 echo "Connected successfully \n";
   
-$sql="SELECT * FROM plantyLog";
+//$sql="SELECT * FROM plantyLog";
+$sql="SELECT * FROM plantyLog order by datetime desc limit 10";
 $result = $conn->query($sql);
 
 echo "Plant Motor Temperature Humidity ALS Moisture Datetime\n";
