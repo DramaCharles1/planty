@@ -22,7 +22,56 @@
  * 
  */
 
-<?php echo file_get_contents("html/header.html"); ?>
+//echo file_get_contents("/home/pi/planty/Header.html");
+
+//echo "Hello World!";
+
+$servername = "localhost";
+$username="root";
+$password="password";
+$database="planty";
+  
+//mysql_connect(localhost,$username,$password);
+$conn = new mysqli($servername, $username, $password, $database);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+//echo "Connected successfully \n";
+  
+//$sql="SELECT * FROM plantyLog";
+$sql="SELECT * FROM plantyLog order by datetime desc limit 24";
+$result = $conn->query($sql);
+
+$dir="/media/savestuff";
+$images = glob($dir . "/*.jpg");
+ 
+$images[count($images)-1]; 
+
+//echo '<img src="file:///home/pi/image.jpg" />'
 
 ?>
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<title>Planty</title>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<meta name="generator" content="Geany 1.29" />
+</head>
+
+<body>
+	<h1>Planty McPlantface</h1>
+	
+	<p> <?php echo $images[count($images)-1];?></p>
+	
+	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
+	<img src="/image.jpg" />
+	
+	
+</body>
+
+</html>
