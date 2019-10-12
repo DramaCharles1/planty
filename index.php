@@ -43,6 +43,7 @@ if ($conn->connect_error) {
 //$sql="SELECT * FROM plantyLog";
 $sql="SELECT * FROM plantyLog order by datetime desc limit 24";
 $result = $conn->query($sql);
+$row_cnt = $result->num_rows;
 
 //$dir="/media/savestuff";
 $temp = "/var/www/html/Images/hej.jpg";
@@ -51,8 +52,6 @@ $images = glob($dir . "/*.jpg");
  
 //echo $images[count($images)-1]; 
 
-$row_cnt = $result->num_rows;
-
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -60,6 +59,13 @@ $row_cnt = $result->num_rows;
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
+	<style>
+		table, th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+	
+	</style>
 	<title>Planty</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 1.29" />
@@ -67,21 +73,42 @@ $row_cnt = $result->num_rows;
 
 <body>
 	<h1>Planty McPlantface</h1>
-	
-	<h3>Date, Plant, Temperature, Humidity, Moisture, ALS, Motor</h3>
-	<p> <?php 
-		$temprow = "";
-		for ($x = 0; $x <= $row_cnt; $x++) {
-				$row = $result->fetch_array(MYSQLI_BOTH);
-				//echo wordwrap();
-				$temprow = $row["datetime"] . ' ' . $row["plant"] . ' ' . $row["temperature"] . ' ' . $row["humidity"] . ' ' . $row["moisture"] . ' ' . $row["ALS"] . ' ' . $row["motor"] . "\n";
-				echo wordwrap($temprow, 15, "\n", TRUE);
-				//echo $temprow;
-			}
+ 	
+ 	<?php 
+		echo "<table style=\"width:75%\">
+				<tr> 
+					<th>Date and time</th>
+					<th>Plant</th>
+					<th>Temperature</th>
+					<th>Humidity</th>
+					<th>Moisture</th>
+					<th>Light</th>
+					<th>Motor</th>
+				</tr>";
+		for ($x = 0; $x < $row_cnt; $x++) {
 			
+			$row = $result->fetch_array(MYSQLI_BOTH);
+			$tempdate = $row["datetime"];
+			$tempplant = $row["plant"];
+			$temptemp = $row["temperature"];
+			$temphum = $row["humidity"];
+			$tempmois = $row["moisture"];
+			$templight = $row["ALS"];
+			$tempmotor = $row["motor"];
+			echo 
+			"<tr>
+				<td>$tempdate</td>
+				<td>$tempplant</td>
+				<td>$temptemp</td>
+				<td>$temphum</td>
+				<td>$tempmois</td>
+				<td>$templight</td>
+				<td>$tempmotor</td>
+			</tr>";
+		}		
+		echo "</table>";
 		$result->free();
-		?>
- 	</p>
+ 	?>
 	
 </body>
 
