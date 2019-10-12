@@ -44,12 +44,14 @@ if ($conn->connect_error) {
 $sql="SELECT * FROM plantyLog order by datetime desc limit 24";
 $result = $conn->query($sql);
 
-$dir="/media/savestuff";
+//$dir="/media/savestuff";
+$temp = "/var/www/html/Images/hej.jpg";
+$dir="var/www/html/Images";
 $images = glob($dir . "/*.jpg");
  
-$images[count($images)-1]; 
+//echo $images[count($images)-1]; 
 
-//echo '<img src="file:///home/pi/image.jpg" />'
+$row_cnt = $result->num_rows;
 
 ?>
 
@@ -66,11 +68,20 @@ $images[count($images)-1];
 <body>
 	<h1>Planty McPlantface</h1>
 	
-	<p> <?php echo $images[count($images)-1];?></p>
-	
-	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
-	<img src="/image.jpg" />
-	
+	<h3>Date, Plant, Temperature, Humidity, Moisture, ALS, Motor</h3>
+	<p> <?php 
+		$temprow = "";
+		for ($x = 0; $x <= $row_cnt; $x++) {
+				$row = $result->fetch_array(MYSQLI_BOTH);
+				//echo wordwrap();
+				$temprow = $row["datetime"] . ' ' . $row["plant"] . ' ' . $row["temperature"] . ' ' . $row["humidity"] . ' ' . $row["moisture"] . ' ' . $row["ALS"] . ' ' . $row["motor"] . "\n";
+				echo wordwrap($temprow, 15, "\n", TRUE);
+				//echo $temprow;
+			}
+			
+		$result->free();
+		?>
+ 	</p>
 	
 </body>
 
