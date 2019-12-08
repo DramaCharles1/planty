@@ -6,7 +6,8 @@ from shutil import copyfile
 
 datime = datetime.now().replace(microsecond=0).isoformat()
 
-picd = '/media/savestuff'
+#picd = '/media/savestuff'
+picd = '/media/pi/USB'
 picCopy = '/var/www/html/Images'
 picn = str(datime) + ".jpg"
 

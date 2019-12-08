@@ -5,6 +5,9 @@ import os
 
 #python plantyCheck.py path image
 #python3 plantyCheck.py /home/richard green_duck.jpg
+#python3 /home/pi/Repo/planty/sketchbook/planty/plantyCheck.py /media/pi/USB 2019-08-08T12:00:05.jpg
+#python3 /home/pi/Repo/planty/sketchbook/planty/plantyCheck.py /media/pi/USB 2019-08-11T12:00:06.jpg
+
 imagePath = sys.argv[1] 
 imageFile = sys.argv[2]
 
