@@ -1,0 +1,35 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+
+<planty>
+  <planty_data>
+    <duration>
+      5000
+    </duration>
+    <power>
+      100
+    </power>
+    <samples>
+      5
+    </samples>
+    <mois_thres>
+      400
+    </mois_thres>
+    <nightmode>
+      1
+    </nightmode>
+  </planty_data>
+  <cam_data>
+    <pic_dir>'/media/pi/USB'</pic_dir>
+    <pic_copy_dir>'/var/www/html/Images'</pic_copy_dir>
+    <lower_green> 
+      l1=65
+      l2=60
+      l3=60
+    </lower_green>
+    <upper_green>
+      u1=80
+      u2=255
+      u3=255
+    </upper_green>
+  </cam_data>
+</planty> 
