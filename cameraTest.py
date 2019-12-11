@@ -6,24 +6,31 @@ from shutil import copyfile
 
 datime = datetime.now().replace(microsecond=0).isoformat()
 
-#picd = '/media/savestuff'
 picd = '/media/pi/USB'
 picCopy = '/var/www/html/Images'
 picn = str(datime) + ".jpg"
 
-plantCam = plantyCamera(picd, picn)
+plantCam = plantyCamera(picd, picn, picCopy)
 
-plantCam.checkPicDir()
+#plantCam.checkPicDir()
 
-if(plantCam.takePic is True):
-	print "ok"
-else:
-	print "not ok"
+# if(plantCam.takePic is True):
+	# print "ok"
+# else:
+	# print "not ok"
 
 plantCam.getPic()
 
-print "end"	
+print("ok")	
 
-copyfile(os.path.join(picd, picn),os.path.join(picCopy, picn))
+plantCam.copyPic()
 
-print "done copy"
+print("done copy")
+print("pic: " + plantCam.fullPath)
+print("pic copy: " + plantCam.fullCopyPath)
+
+plantCam.greenCheck()
+
+print("Original pixel: " + str(plantCam.org_pixel))
+print("Green pixel: " + str(plantCam.green_pixel))
+print("Green pixel percentage: " + str(plantCam.green_percentage))
