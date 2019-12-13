@@ -2,10 +2,12 @@
 
 from time import sleep
 from plantyData import PlantyData
+import os
 import serial
 import sys
-import mysql.connector
-from mysql.connector import errorcode
+#import mysql.connector
+#from mysql.connector import errorcode
+from xml.dom import minidom
 
 motor=-1
 mois = -1
@@ -14,33 +16,56 @@ hum = -1
 ALS = -1
 plant = "default"
 
-#plantycom.py duration power samples moisThres nightMode
+#python3 plantycom.py /home/pi/Repo/planty cameraData.xml 1
+#python3 plantycom.py xmlPath xmlFile takepic
 
-try: 
-	if(len(sys.argv) < 6):
-		raise Exception("Not enough arguements")
-	if(len(sys.argv) > 6):
-		raise Exception("Too many arguements")
-
-	#duration = 10000 #ms
-	duration = int(sys.argv[1])
-	#power = 99 #%
-	power = int(sys.argv[2])
-	#samples = 3
-	samples = int(sys.argv[3])
-	#moisThres = 400
-	moisThres = int(sys.argv[4])
-	nightMode = False
+try:
 	
-	if(int(sys.argv[5]) == 1):
-		nightMode = True
-	elif(int(sys.argv[5]) == 0):
-		nightMode = False
-	else:
-		raise ValueError("nightMode must be equal to 0 or 1")	
+	if(len(sys.argv) < 4):
+		raise Exception("Not enough arguements")
+	if(len(sys.argv) > 4):
+		raise Exception("Too many arguements")
+		
+	xmlPath = str(sys.argv[1])
+	xmlFile = str(sys.argv[2])
 
-except ValueError, e:
-	print str(e)
+	fullPath = os.path.join(xmlPath, xmlFile)
+	
+	mydoc = minidom.parse(fullPath)
+	plantyDatas = mydoc.getElementsByTagName('planty_data') 
+	
+	duration = plantyDatas[0].getElementsByTagName("duration")[0].firstChild.data.strip()
+	power = plantyDatas[0].getElementsByTagName("power")[0].firstChild.data.strip()
+	samples = plantyDatas[0].getElementsByTagName("samples")[0].firstChild.data.strip()
+	moisThres = plantyDatas[0].getElementsByTagName("mois_thres")[0].firstChild.data.strip()
+	nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
+	
+	if(nightModetmp == 1):
+		nightMode = True
+	elif(nightModetmp == 0):
+		nightMode = False
+		
+	if(int(sys.argv[3]) == 1):
+		#Take Pic
+		CameraDatas = mydoc.getElementsByTagName('cam_data') 
+		picDir = CameraDatas[0].getElementsByTagName("pic_dir")[0].firstChild.data.strip()
+		picCopyDir = CameraDatas[0].getElementsByTagName("pic_copy_dir")[0].firstChild.data.strip()
+		
+		l1 = CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1")
+		lowerGreen = [CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1"), CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l2"), CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l3")]
+		upperGreen = [CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u1"), CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u2"), CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u3")]
+		
+	elif(int(sys.argv[3]) == 0):
+		#Do not take Pic
+		CameraDatas = 0
+	else:
+		raise ValueError("Camera option must be set to 0 or 1")	
+	
+	#Ta bort innan test!!!
+	sys.exit()	
+	
+except ValueError as e:
+	print(str(e))
 	sys.exit()	
 
 def checkOK(rec):
@@ -162,29 +187,29 @@ try:
 	ser.flush()
 	ser.close()
 	
-except serial.SerialException, e:
+except serial.SerialException as e:
 	
 	if "could not open port" in str(e):
-		print "Port busy! Please change port"
+		print("Port busy! Please change port")
 		sys.exit()
 	else:
-		print str(e)
+		print(str(e))
 		
 data = PlantyData(motor,mois,temp,hum,plant,ALS)
 		
-print "Plant: " + data.plant
+print("Plant: " + data.plant)
 #print type(data.plant)
-print "Moisture: " + data.moisture
+print("Moisture: " + data.moisture)
 #print type(data.moisture)
-print "Temperature: " + data.temperature
+print("Temperature: " + data.temperature)
 #print type(data.temperature)
-print "Humidity: " + data.humidity
+print("Humidity: " + data.humidity)
 #print type(data.humidity)
-print "Motor: " + data.motor
+print("Motor: " + data.motor)
 #print type(data.motor)
-print "ALS: " + data.ALS
+print("ALS: " + data.ALS)
 #print type(data.ALS)
-print "Time stamp: " + str(data.timeStamp)
+print("Time stamp: " + str(data.timeStamp))
 #print type(data.timeStamp)
 
 try:
