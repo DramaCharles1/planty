@@ -16,6 +16,8 @@ hum = -1
 ALS = -1
 plant = "default"
 
+nightMode = False
+
 #python3 plantycom.py /home/pi/Repo/planty cameraData.xml 1
 #python3 plantycom.py xmlPath xmlFile takepic
 
@@ -40,9 +42,9 @@ try:
 	moisThres = plantyDatas[0].getElementsByTagName("mois_thres")[0].firstChild.data.strip()
 	nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
 	
-	if(nightModetmp == 1):
+	if(int(nightModetmp) == 1):
 		nightMode = True
-	elif(nightModetmp == 0):
+	elif(int(nightModetmp) == 0):
 		nightMode = False
 		
 	if(int(sys.argv[3]) == 1):
@@ -61,8 +63,6 @@ try:
 	else:
 		raise ValueError("Camera option must be set to 0 or 1")	
 	
-	#Ta bort innan test!!!
-	sys.exit()	
 	
 except ValueError as e:
 	print(str(e))
@@ -178,7 +178,7 @@ try:
 		
 		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
 		motor = str(power)+","+str(duration)
-		sleep(duration/1000)
+		sleep(int(duration)/1000)
 
 	elif (float(mois) > moisThres and nightMode == True):
 		motor = "0"
@@ -211,6 +211,8 @@ print("ALS: " + data.ALS)
 #print type(data.ALS)
 print("Time stamp: " + str(data.timeStamp))
 #print type(data.timeStamp)
+
+sys.exit()	
 
 try:
 
