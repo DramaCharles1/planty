@@ -18,6 +18,7 @@ ALS = -1
 plant = "default"
 
 nightMode = False
+takePic = False
 
 #python plantycom.py /home/pi/Repo/planty cameraData.xml 1 0
 #python plantycom.py xmlPath xmlFile takepic nightmode
@@ -52,6 +53,7 @@ try:
 		
 	if(int(sys.argv[3]) == 1):
 		#Take Pic
+		takePic = True
 		CameraDatas = mydoc.getElementsByTagName('cam_data') 
 		picDir = CameraDatas[0].getElementsByTagName("pic_dir")[0].firstChild.data.strip()
 		picCopyDir = CameraDatas[0].getElementsByTagName("pic_copy_dir")[0].firstChild.data.strip()
@@ -214,6 +216,17 @@ print("ALS: " + data.ALS)
 #print type(data.ALS)
 print("Time stamp: " + str(data.timeStamp))
 #print type(data.timeStamp)
+
+if(takePic):
+	cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
+	print(cam.fullPath)
+	cam.getPic()
+	#cam.copyPic()
+	#cam.greenCheck()
+	
+	print("Original pixel: " + str(cam.org_pixel))
+	print("Green pixels: " + str(cam.green_pixel))
+	print("Green percentage: " + str(cam.green_percentage))
 
 sys.exit()	
 
