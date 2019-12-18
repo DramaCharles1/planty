@@ -12,9 +12,6 @@
     <mois_thres>
       400
     </mois_thres>
-    <nightmode>
-      1
-    </nightmode>
   </planty_data>
   <cam_data>
     <pic_dir>'/media/pi/USB'</pic_dir>

@@ -2,6 +2,7 @@
 
 from time import sleep
 from plantyData import PlantyData
+from plantyCamera import plantyCamera
 import os
 import serial
 import sys
@@ -18,14 +19,14 @@ plant = "default"
 
 nightMode = False
 
-#python3 plantycom.py /home/pi/Repo/planty cameraData.xml 1
-#python3 plantycom.py xmlPath xmlFile takepic
+#python plantycom.py /home/pi/Repo/planty cameraData.xml 1 0
+#python plantycom.py xmlPath xmlFile takepic nightmode
 
 try:
 	
-	if(len(sys.argv) < 4):
+	if(len(sys.argv) < 5):
 		raise Exception("Not enough arguements")
-	if(len(sys.argv) > 4):
+	if(len(sys.argv) > 5):
 		raise Exception("Too many arguements")
 		
 	xmlPath = str(sys.argv[1])
@@ -40,12 +41,14 @@ try:
 	power = plantyDatas[0].getElementsByTagName("power")[0].firstChild.data.strip()
 	samples = plantyDatas[0].getElementsByTagName("samples")[0].firstChild.data.strip()
 	moisThres = plantyDatas[0].getElementsByTagName("mois_thres")[0].firstChild.data.strip()
-	nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
+	#nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
 	
-	if(int(nightModetmp) == 1):
+	if(int(sys.argv[4]) == 1):
 		nightMode = True
-	elif(int(nightModetmp) == 0):
+	elif(int(sys.argv[4]) == 0):
 		nightMode = False
+	else:
+		raise ValueError("Nightmode option must be set to 0 or 1")	
 		
 	if(int(sys.argv[3]) == 1):
 		#Take Pic
@@ -72,9 +75,9 @@ def checkOK(rec):
 	ok = "OK"
 	err = "ERR"
 	
-	if("OK" in rec):
+	if("OK" in str(rec)):
 		return True
-	elif ("ERR" in rec):
+	elif ("ERR" in str(rec)):
 		return False
 	else:
 		raise Exception("Not a valid command recieved" + "rec: " + rec)
@@ -82,8 +85,8 @@ def checkOK(rec):
 def getCommandValue(rec):
 	separator = ['=',',','\n']
 	
-	rec = rec.replace('=',',')
-	value = rec.split(',')
+	rec = str(rec).replace('=',',')
+	value = str(rec).split(',')
 	
 	return value[1]
 
@@ -93,10 +96,10 @@ try:
 	
 	sleep(2)
 	
-	ser.write("MOTR=0"+'\n')
+	ser.write(("MOTR=0"+'\n').encode('utf-8'))
 	sleep(0.5)
 	
-	ser.write("TEMP=2"+'\n')
+	ser.write(("TEMP=2"+'\n').encode('utf-8'))
 	sleep(0.5)
 
 	while ser.in_waiting > 0:
@@ -109,20 +112,20 @@ try:
 	
 	rec = ""
 	
-	ser.write("PLANT=1"+'\n')
+	ser.write(("PLANT=1"+'\n').encode('utf-8'))
 	sleep(0.5)
 
 	while ser.in_waiting > 0:
 		rec = ser.readline()
 	
 	if not(checkOK(rec)):
-		raise Exception("Command: " + rec + "returned an error")
+		raise Exception("Command: " + str(rec) + "returned an error")
 				
 	plant = getCommandValue(rec)
 	
 	rec = ""
 	
-	ser.write("MOIS=" + str(samples) +'\n')
+	ser.write(("MOIS=" + str(samples) +'\n').encode('utf-8'))
 	sleep(5)
 
 	while ser.in_waiting > 0:
@@ -135,7 +138,7 @@ try:
 	
 	rec = ""
 	
-	ser.write("TEMP=1"+'\n')
+	ser.write(("TEMP=1"+'\n').encode('utf-8'))
 	sleep(0.5)
 
 	while ser.in_waiting > 0:
@@ -161,7 +164,7 @@ try:
 	
 	#rec = ""
 	
-	ser.write("ALS"+'\n')
+	ser.write(("ALS"+'\n').encode('utf-8'))
 	sleep(0.5)
 
 	while ser.in_waiting > 0:
@@ -174,13 +177,13 @@ try:
 	
 	rec = ""	
 	
-	if(float(mois) < moisThres and nightMode == True):
+	if(float(mois) < float(moisThres) and nightMode == True):
 		
-		ser.write("MOTR=1,"+str(power)+","+str(duration)+'\n')
+		ser.write(("MOTR=1,"+str(power)+","+str(duration)+'\n').encode('utf-8'))
 		motor = str(power)+","+str(duration)
 		sleep(int(duration)/1000)
 
-	elif (float(mois) > moisThres and nightMode == True):
+	elif (float(mois) > float(moisThres) and nightMode == True):
 		motor = "0"
 	else:
 		motor = "-1"
