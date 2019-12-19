@@ -219,10 +219,9 @@ print("Time stamp: " + str(data.timeStamp))
 
 if(takePic):
 	cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
-	print(cam.fullPath)
 	cam.getPic()
-	#cam.copyPic()
-	#cam.greenCheck()
+	cam.copyPic()
+	cam.greenCheck()
 	
 	print("Original pixel: " + str(cam.org_pixel))
 	print("Green pixels: " + str(cam.green_pixel))

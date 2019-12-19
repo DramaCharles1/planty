@@ -42,7 +42,7 @@ class plantyCamera:
 
 			camera.stop_preview()
 			
-			self.__checkPic(self)
+			self.__checkPic()
 			
 			if not(self.takePic):
 				raise Exception("Could not find file: " + self.fullPath)
