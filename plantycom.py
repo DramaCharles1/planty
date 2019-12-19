@@ -6,8 +6,8 @@ from plantyCamera import plantyCamera
 import os
 import serial
 import sys
-#import mysql.connector
-#from mysql.connector import errorcode
+import mysql.connector
+from mysql.connector import errorcode
 from xml.dom import minidom
 
 motor=-1
@@ -227,7 +227,7 @@ if(takePic):
 	print("Green pixels: " + str(cam.green_pixel))
 	print("Green percentage: " + str(cam.green_percentage))
 
-sys.exit()	
+#sys.exit()	
 
 try:
 

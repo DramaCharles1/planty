@@ -1,8 +1,21 @@
 Automatic watering system using Arduino Uno
 
 Install mysql
-sudo apt-get install mysql-server
 pip3 install mysql-connector-python
+sudo apt-get install php-mysql
+sudo apt-get install mariadb-client-10.0
+sudo apt-get install mariadb-server-10.0
+
+Create new user mariadb, grants permission for php scripts
+DROP USER 'root'@'localhost';
+CREATE USER 'root'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+
+Create database
+CREATE DATABASE planty;
+CREATE TABLE plantyLog(plant VARCHAR(10) NOT NULL, motor VARCHAR(10) NOT NULL, temperature VARCHAR(10) NOT NULL, humidity VARCHAR(10) NOT NULL, ALS VARCHAR(10) NOT NULL, moisture VARCHAR(10) NOT NULL, datetime DATETIME NOT NULL)
+Example: 
+INSERT INTO table_name (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Basil","-1","24.00","46.00","69","43.00","2019-12-19T22:07:25") 
 
 install apache
 sudo apt install apache2
