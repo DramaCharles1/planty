@@ -19,9 +19,14 @@ if ($conn->connect_error) {
 //echo "Connected successfully \n";
   
 //$sql="SELECT * FROM plantyLog";
-$sql="SELECT * FROM plantyLog order by datetime desc limit 24";
-$result = $conn->query($sql);
-$row_cnt = $result->num_rows;
+$plantsql="SELECT * FROM plantyLog order by datetime desc limit 24";
+$plantresult = $conn->query($plantsql);
+$plantrow_cnt = $plantresult->num_rows;
+
+//$sql="SELECT * FROM plantyLog";
+$camerasql="SELECT * FROM cameraLog order by datetime desc limit 24";
+$cameraresult = $conn->query($camerasql);
+$camerarow_cnt = $cameraresult->num_rows;
 
 //$dir="/media/savestuff";
 $temp = "/var/www/html/Images/hej.jpg";
@@ -51,7 +56,7 @@ $images = glob($dir . "/*.jpg");
 
 <body>
 	<h1>Planty McPlantface</h1>
- 	
+	
  	<?php 
 		echo "<table style=\"width:75%\">
 				<tr> 
@@ -63,9 +68,9 @@ $images = glob($dir . "/*.jpg");
 					<th>Light</th>
 					<th>Motor</th>
 				</tr>";
-		for ($x = 0; $x < $row_cnt; $x++) {
+		for ($x = 0; $x < $plantrow_cnt; $x++) {
 			
-			$row = $result->fetch_array(MYSQLI_BOTH);
+			$row = $plantresult->fetch_array(MYSQLI_BOTH);
 			$tempdate = $row["datetime"];
 			$tempplant = $row["plant"];
 			$temptemp = $row["temperature"];
@@ -85,7 +90,36 @@ $images = glob($dir . "/*.jpg");
 			</tr>";
 		}		
 		echo "</table>";
-		$result->free();
+		$plantresult->free();
+ 	?>
+ 	
+ 	<h2>Planty Camera</h2>
+ 	
+ 	<?php 
+		echo "<table style=\"width:75%\">
+				<tr> 
+					<th>Date and time</th>
+					<th>Original pixels</th>
+					<th>Green pixels</th>
+					<th>Green percentage</th>
+				</tr>";
+		for ($x = 0; $x < $camerarow_cnt; $x++) {
+			
+			$row = $cameraresult->fetch_array(MYSQLI_BOTH);
+			$tempdate = $row["datetime"];
+			$temporgpixel = $row["orgpixel"];
+			$tempgreenpixel = $row["greenpixel"];
+			$temppercent = $row["greenpercent"];
+			echo 
+			"<tr>
+				<td>$tempdate</td>
+				<td>$temporgpixel</td>
+				<td>$tempgreenpixel</td>
+				<td>$temppercent</td>
+			</tr>";
+		}		
+		echo "</table>";
+		$cameraresult->free();
  	?>
 	
 </body>
