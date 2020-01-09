@@ -57,6 +57,8 @@ $images = glob($dir . "/*.jpg");
 <body>
 	<h1>Planty McPlantface</h1>
 	
+	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
+	
  	<?php 
 		echo "<table style=\"width:75%\">
 				<tr> 
