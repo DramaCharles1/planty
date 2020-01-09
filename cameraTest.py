@@ -34,3 +34,7 @@ plantCam.greenCheck()
 print("Original pixel: " + str(plantCam.org_pixel))
 print("Green pixel: " + str(plantCam.green_pixel))
 print("Green pixel percentage: " + str(plantCam.green_percentage))
+
+print(str(type(plantCam.org_pixel)))
+print(str(type(plantCam.green_pixel)))
+print(str(type(plantCam.green_percentage)))

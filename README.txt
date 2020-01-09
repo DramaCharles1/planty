@@ -14,6 +14,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
 Create database
 CREATE DATABASE planty;
 CREATE TABLE plantyLog(plant VARCHAR(10) NOT NULL, motor VARCHAR(10) NOT NULL, temperature VARCHAR(10) NOT NULL, humidity VARCHAR(10) NOT NULL, ALS VARCHAR(10) NOT NULL, moisture VARCHAR(10) NOT NULL, datetime DATETIME NOT NULL)
+CREATE TABLE cameraLog(orgpixel INT NOT NULL, greenpixel INT NOT NULL, greenpercent FLOAT NOT NULL, datetime DATETIME NOT NULL)
 Example: 
 INSERT INTO table_name (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Basil","-1","24.00","46.00","69","43.00","2019-12-19T22:07:25") 
 

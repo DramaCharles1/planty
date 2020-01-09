@@ -244,9 +244,14 @@ try:
 	#INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Test","Test","Test","Test","Test","Test","Test");
 	
 	insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+	logData = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
+	myCursor.execute(insert_stmt, logData)
 	
-	data = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
-	myCursor.execute(insert_stmt, data)
+	if(takePic):
+		insert_stmt = "INSERT INTO cameraLog (orgpixel,greenpixel,greenpercent,datetime) VALUES (%s,%s,%s,%s)"
+		logCamData = (cam.org_pixel,cam.green_pixel,cam.green_percentage,data.timeStamp)
+		myCursor.execute(insert_stmt, logCamData)
+		
 	myCursor.close()
 	
 	conn.commit()
