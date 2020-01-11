@@ -12,6 +12,7 @@ int sensorPin = A2;
 int tempSensorPin = A3;
 int boardLed = 13;
 int interruptPin2 = 0; //switch interrupt
+int LEDin = 4;
 
 int addr = 0;
 float power = 0;
@@ -39,6 +40,7 @@ void setup()
   pinMode(motorTranPin, OUTPUT);
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);
+  pinMode(LEDin, OUTPUT);
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
   analogWrite(motorTranPin, 0); //power off
 
@@ -207,6 +209,16 @@ void loop()
         }     
         
       }
+      else if(action == "LED")
+      {
+        int power = ets.substring(ets.indexOf('=') + 1).toInt();
+
+        if(power == 0 || 1){
+          setLED(power);
+          Serial.println(action + "=" + power + ",OK");
+        }else{
+          Serial.println(action + "=" + power + ",ERR");
+      }
     }
     else
     {
@@ -241,7 +253,7 @@ boolean checkCommand(String in)
 
   String action = getAction(in);
 
-  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT" || action == "ALS")
+  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT" || action == "ALS" || action == "LED")
   {
     return true;
   }
@@ -340,4 +352,14 @@ boolean startALS(){
     ALSready = false;
   }
   
+}
+
+void setLED(int power){
+
+  if(power == 1){
+    digitalWrite(LEDin, HIGH);
+  }
+  else if(power == 0){
+    digitalWrite(LEDin, LOW);
+  }
 }
