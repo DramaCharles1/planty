@@ -32,3 +32,9 @@ Send:
 ALS
 return:
 ALS=<parameter>,OK
+
+Send:
+LED=<parameter>
+<parameter>: 0=off, 1=purple, 2=white, 3=red, 4=green, 5=blue
+Return:
+LED=<parameter>,OK

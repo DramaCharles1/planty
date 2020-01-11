@@ -1,9 +1,18 @@
 #include <dht.h>
 #include <EEPROM.h>
 #include "Adafruit_VEML7700.h"
+#include <Adafruit_NeoPixel.h>
 
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 //#define DHT11PIN 2 //Maybe needs to change
+#define LED_COUNT 24
+#define LED_PIN 4
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
+uint32_t purple = strip.Color(255, 0, 255);
+uint32_t white = strip.Color(255, 255, 255);
+uint32_t red = strip.Color(255, 0, 0);
+uint32_t green = strip.Color(0, 255, 0);
+uint32_t blue = strip.Color(0, 0, 255);
 
 //I/O
 int motorTranPin = 3;
@@ -12,7 +21,7 @@ int sensorPin = A2;
 int tempSensorPin = A3;
 int boardLed = 13;
 int interruptPin2 = 0; //switch interrupt
-int LEDin = 4;
+//int LEDin = 4;
 
 int addr = 0;
 float power = 0;
@@ -36,11 +45,13 @@ dht DHT;
 
 void setup()
 {
+  strip.begin();
+  strip.show(); //All pixels off
   Serial.begin(57600);
   pinMode(motorTranPin, OUTPUT);
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);
-  pinMode(LEDin, OUTPUT);
+  //pinMode(LEDin, OUTPUT);
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
   analogWrite(motorTranPin, 0); //power off
 
@@ -211,14 +222,55 @@ void loop()
       }
       else if (action == "LED")
       {
-        int power = ets.substring(ets.indexOf('=') + 1).toInt();
+        int LEDparam = -1;
+        LEDparam = ets.substring(ets.indexOf('=') + 1).toInt();
+        
+        if (LEDparam == 1) {
 
-        if (power == 0 || power == 1) {
-          setLED(power);
-          Serial.println(action + "=" + power + ",OK");
-        } else {
-          Serial.println(action + "=" + power + ",ERR");
+          String retcolor = "";
+          int color = ets.substring(ets.indexOf(',') + 1).toInt();
+
+          if (color == 0 || color == 1 || color == 2 || color == 3 || color == 4 || color == 5) {
+            setLED(color);
+
+            switch (color) {
+              case 0:
+                retcolor = "off";
+                break;
+              case 1:
+                retcolor = "purple";
+                break;
+              case 2:
+                retcolor = "white";
+                break;
+              case 3:
+                retcolor = "red";
+                break;
+              case 4:
+                retcolor = "green";
+                break;
+              case 5:
+                retcolor = "blue";
+                break;
+              default:
+                // statements
+                break;
+            }
+
+            Serial.println(action + "=" + retcolor + ",OK");
+          } else {
+            Serial.println(action + "=" + retcolor + ",ERR");
+          }
         }
+        else if (LEDparam == 2) {
+          //Not yet implemented :(
+          uint32_t qcolor = strip.getPixelColor(11);
+          Serial.println(action + "=" + LEDparam + qcolor + ",OK");
+        }
+        else{
+          Serial.println(action + "=" + LEDparam + ",ERR");
+        }
+
       }
     }
 
@@ -357,12 +409,42 @@ boolean startALS() {
 
 }
 
-void setLED(int power) {
+void setLED(int color) {
 
-  if (power == 1) {
-    digitalWrite(LEDin, HIGH);
+  if (color == 1) {
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(purple, 0);
+    //strip.setPixelColor(0, 255, 0, 255);
+    strip.show();
   }
-  else if (power == 0) {
-    digitalWrite(LEDin, LOW);
+  if (color == 2) {
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(white, 0);
+    //strip.setPixelColor(0, 255, 0, 255);
+    strip.show();
+  }
+  if (color == 3) {
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(red, 0);
+    //strip.setPixelColor(0, 255, 0, 255);
+    strip.show();
+  }
+  if (color == 4) {
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(green, 0);
+    //strip.setPixelColor(0, 255, 0, 255);
+    strip.show();
+  }
+  if (color == 5) {
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(blue, 0);
+    //strip.setPixelColor(0, 255, 0, 255);
+    strip.show();
+  }
+  else if (color == 0) {
+    //digitalWrite(LED_PIN, LOW);
+    strip.clear();
+    //strip.setPixelColor(0, 0, 0, 0);
+    strip.show();
   }
 }
