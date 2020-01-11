@@ -54,8 +54,8 @@ void loop()
 {
 
   String action = "";
-  
-  if(ALSready == false){
+
+  if (ALSready == false) {
     startALS();
   }
 
@@ -144,7 +144,7 @@ void loop()
           {
             Serial.println(action + "=" + moisValue + ",OK");
           }
-        }else
+        } else
         {
           Serial.println(ets + ",ERR");
         }
@@ -197,29 +197,31 @@ void loop()
 
         if (!ALSready) {
           Serial.println(action + ",ERR");
-        }else{
+        } else {
           ALSval = veml.readALS();
 
-          if(ALSval < 0)
+          if (ALSval < 0)
           {
             ALSval = 65535;
           }
-          
+
           Serial.println(action + "=" + ALSval + ",OK");
-        }     
-        
+        }
+
       }
-      else if(action == "LED")
+      else if (action == "LED")
       {
         int power = ets.substring(ets.indexOf('=') + 1).toInt();
 
-        if(power == 0 || 1){
+        if (power == 0 || power == 1) {
           setLED(power);
           Serial.println(action + "=" + power + ",OK");
-        }else{
+        } else {
           Serial.println(action + "=" + power + ",ERR");
+        }
       }
     }
+
     else
     {
       Serial.println(ets + ",ERR");
@@ -232,6 +234,7 @@ void loop()
     stringComplete = false;
   }
 }
+
 
 void serialEvent() {
   //statements
@@ -341,25 +344,25 @@ String read_String(char add)
   return String(data);
 }
 
-boolean startALS(){
+boolean startALS() {
 
-  if(veml.begin()){
+  if (veml.begin()) {
     ALSready = true;
 
     veml.setGain(VEML7700_GAIN_1_8);
     veml.setIntegrationTime(VEML7700_IT_800MS);
-  }else{
+  } else {
     ALSready = false;
   }
-  
+
 }
 
-void setLED(int power){
+void setLED(int power) {
 
-  if(power == 1){
+  if (power == 1) {
     digitalWrite(LEDin, HIGH);
   }
-  else if(power == 0){
+  else if (power == 0) {
     digitalWrite(LEDin, LOW);
   }
 }
