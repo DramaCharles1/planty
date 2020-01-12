@@ -7,6 +7,7 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 //#define DHT11PIN 2 //Maybe needs to change
 #define LED_COUNT 24
 #define LED_PIN 4
+#define LED_INPIN 7
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t purple = strip.Color(255, 0, 255);
 uint32_t white = strip.Color(255, 255, 255);

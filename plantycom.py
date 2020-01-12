@@ -5,6 +5,7 @@ from plantyData import PlantyData
 from plantyCamera import plantyCamera
 import os
 import serial
+import serial.tools.list_ports
 import sys
 import mysql.connector
 from mysql.connector import errorcode
@@ -94,7 +95,18 @@ def getCommandValue(rec):
 
 #Main
 try:
-	ser = serial.Serial('/dev/ttyACM0', 57600) 
+	
+	portlist = serial.tools.list_ports.comports(include_links=False)
+	arduinoport = ""
+	
+	for port in portlist:
+		if "Genuino" in port.description:
+			arduinoport = port.device
+			
+	if arduinoport == "":
+		raise Exception("Could not find any arduino")
+	
+	ser = serial.Serial(arduinoport, 57600) 
 	
 	sleep(2)
 	
@@ -216,6 +228,8 @@ print("ALS: " + data.ALS)
 #print type(data.ALS)
 print("Time stamp: " + str(data.timeStamp))
 #print type(data.timeStamp)
+
+sys.exit()
 
 if(takePic):
 	cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
