@@ -8,13 +8,16 @@ import cv2
 import numpy as np
 
 class plantyCamera:
-	def __init__(self, picDir, picName, picCopyDir):
+	def __init__(self, picDir, picName, picCopyDir, lowGreen, highGreen):
 		self.picDir = picDir
 		self.picName = picName
 		self.picCopyDir = picCopyDir
 		self.fullPath = os.path.join(self.picDir, self.picName)
 		self.fullCopyPath = os.path.join(self.picCopyDir, self.picName)
 		self.takePic = False
+		
+		self.lowGreen = lowGreen
+		self.highGreen = highGreen
 		
 		self.org_pixel = -1
 		self.green_pixel = -1
@@ -62,8 +65,8 @@ class plantyCamera:
 		
 		hsv = cv2.cvtColor(src,cv2.COLOR_BGR2HSV)
 		
-		lower_green = np.array([65,60,60])
-		upper_green = np.array([80,255,255])
+		lower_green = np.array(self.lowGreen)
+		upper_green = np.array(self.highGreen)
 		
 		mask1 = cv2.inRange(hsv, lower_green, upper_green)
 		
@@ -74,4 +77,4 @@ class plantyCamera:
 		self.green_percentage = round((1-(self.org_pixel-self.green_pixel)/self.org_pixel)*100,3)
 		
 		cv2.imwrite(self.picDir + '/' + 'res_'+self.picName, res1)
-		print(self.picDir + '/' + 'res_'+self.picName)
+		#print(self.picDir + '/' + 'res_'+self.picName)

@@ -59,9 +59,9 @@ try:
 		picDir = CameraDatas[0].getElementsByTagName("pic_dir")[0].firstChild.data.strip()
 		picCopyDir = CameraDatas[0].getElementsByTagName("pic_copy_dir")[0].firstChild.data.strip()
 		
-		l1 = CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1")
-		lowerGreen = [CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1"), CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l2"), CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l3")]
-		upperGreen = [CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u1"), CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u2"), CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u3")]
+		#l1 = CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1")
+		lowerGreen = [int(CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l1")), int(CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l2")), int(CameraDatas[0].getElementsByTagName("lower_green")[0].getAttribute("l3"))]
+		upperGreen = [int(CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u1")), int(CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u2")), int(CameraDatas[0].getElementsByTagName("upper_green")[0].getAttribute("u3"))]
 		
 	elif(int(sys.argv[3]) == 0):
 		#Do not take Pic
@@ -217,7 +217,7 @@ try:
 		if not(checkOK(rec)):
 			raise Exception("Command: " + rec + "returned an error")
 		
-		cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
+		cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir),lowerGreen,upperGreen)
 		cam.getPic()
 		cam.copyPic()
 		cam.greenCheck()
