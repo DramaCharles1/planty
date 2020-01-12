@@ -201,6 +201,38 @@ try:
 		motor = "0"
 	else:
 		motor = "-1"
+		
+	data = PlantyData(motor,mois,temp,hum,plant,ALS)
+	
+	if(takePic):
+		
+		rec = ""
+	
+		ser.write(("LED=" + "1,2" +'\n').encode('utf-8'))
+		sleep(5)
+
+		while ser.in_waiting > 0:
+			rec = ser.readline()
+		
+		if not(checkOK(rec)):
+			raise Exception("Command: " + rec + "returned an error")
+		
+		cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
+		cam.getPic()
+		cam.copyPic()
+		cam.greenCheck()
+		
+		rec = ""
+	
+		ser.write(("LED=" + "1,0" +'\n').encode('utf-8'))
+		sleep(5)
+
+		while ser.in_waiting > 0:
+			rec = ser.readline()
+		
+		if not(checkOK(rec)):
+			raise Exception("Command: " + rec + "returned an error")
+	
 	ser.flush()
 	ser.close()
 	
@@ -211,8 +243,6 @@ except serial.SerialException as e:
 		sys.exit()
 	else:
 		print(str(e))
-		
-data = PlantyData(motor,mois,temp,hum,plant,ALS)
 		
 print("Plant: " + data.plant)
 #print type(data.plant)
@@ -229,19 +259,12 @@ print("ALS: " + data.ALS)
 print("Time stamp: " + str(data.timeStamp))
 #print type(data.timeStamp)
 
-sys.exit()
-
 if(takePic):
-	cam = plantyCamera(str(picDir),str(data.timeStamp) + ".jpg",str(picCopyDir))
-	cam.getPic()
-	cam.copyPic()
-	cam.greenCheck()
-	
 	print("Original pixel: " + str(cam.org_pixel))
 	print("Green pixels: " + str(cam.green_pixel))
 	print("Green percentage: " + str(cam.green_percentage))
 
-#sys.exit()	
+sys.exit()	
 
 try:
 
