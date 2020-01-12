@@ -65,6 +65,9 @@ class plantyCamera:
 		
 		hsv = cv2.cvtColor(src,cv2.COLOR_BGR2HSV)
 		
+		print(self.lowGreen)
+		print(self.highGreen)
+		
 		lower_green = np.array(self.lowGreen)
 		upper_green = np.array(self.highGreen)
 		
