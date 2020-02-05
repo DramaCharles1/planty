@@ -264,8 +264,6 @@ if(takePic):
 	print("Green pixels: " + str(cam.green_pixel))
 	print("Green percentage: " + str(cam.green_percentage))
 
-sys.exit()	
-
 try:
 
 	conn = mysql.connector.connect(
