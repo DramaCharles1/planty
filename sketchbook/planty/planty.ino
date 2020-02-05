@@ -8,6 +8,8 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 #define LED_COUNT 24
 #define LED_PIN 4
 #define LED_INPIN 7
+#define WATER_INTERUPT 2
+
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t purple = strip.Color(255, 0, 255);
 uint32_t white = strip.Color(255, 255, 255);
@@ -21,7 +23,7 @@ int moisSensorTranPin = A1;
 int sensorPin = A2;
 int tempSensorPin = A3;
 int boardLed = 13;
-int interruptPin2 = 0; //switch interrupt
+//int buttonPin = 0; //switch interrupt
 //int LEDin = 4;
 
 int addr = 0;
@@ -56,8 +58,8 @@ void setup()
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
   analogWrite(motorTranPin, 0); //power off
 
-  pinMode(2, INPUT_PULLUP);
-  //attachInterrupt(interruptPin2, turnOn, CHANGE);
+  pinMode(WATER_INTERUPT, INPUT_PULLUP);
+  attachInterrupt(WATER_INTERUPT, ButtonWater, CHANGE);
   //Serial.println("Welcome!");
 
 }
@@ -448,4 +450,16 @@ void setLED(int color) {
     //strip.setPixelColor(0, 0, 0, 0);
     strip.show();
   }
+}
+
+void ButtonWater(){
+  while(digitalRead(WATER_INTERUPT) == LOW){
+    analogWrite(motorTranPin, 255.0);
+    digitalWrite(boardLed, HIGH);
+  }
+
+  delay(100);
+  
+  analogWrite(motorTranPin, 0.0);
+  digitalWrite(boardLed, LOW);
 }
