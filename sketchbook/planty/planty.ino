@@ -59,7 +59,7 @@ void setup()
   analogWrite(motorTranPin, 0); //power off
 
   pinMode(WATER_INTERUPT, INPUT_PULLUP);
-  attachInterrupt(WATER_INTERUPT, ButtonWater, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, CHANGE);
   //Serial.println("Welcome!");
 
 }
@@ -232,9 +232,14 @@ void loop()
 
           String retcolor = "";
           int color = ets.substring(ets.indexOf(',') + 1).toInt();
+          int bright = ets.substring(ets.indexOf('=') + 5).toInt();
+
+          if(bright > 255){
+            bright = 255;
+          }
 
           if (color == 0 || color == 1 || color == 2 || color == 3 || color == 4 || color == 5) {
-            setLED(color);
+            setLED(color,bright);
 
             switch (color) {
               case 0:
@@ -412,7 +417,7 @@ boolean startALS() {
 
 }
 
-void setLED(int color) {
+void setLED(int color, int bright) {
 
   if (color == 1) {
     //digitalWrite(LED_PIN, HIGH);
@@ -423,6 +428,7 @@ void setLED(int color) {
   if (color == 2) {
     //digitalWrite(LED_PIN, HIGH);
     strip.fill(white, 0);
+    strip.setBrightness(bright);
     //strip.setPixelColor(0, 255, 0, 255);
     strip.show();
   }

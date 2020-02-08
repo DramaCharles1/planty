@@ -208,7 +208,7 @@ try:
 		
 		rec = ""
 	
-		ser.write(("LED=" + "1,2" +'\n').encode('utf-8'))
+		ser.write(("LED=" + "1,2,255" +'\n').encode('utf-8'))
 		sleep(5)
 
 		while ser.in_waiting > 0:
@@ -224,7 +224,7 @@ try:
 		
 		rec = ""
 	
-		ser.write(("LED=" + "1,0" +'\n').encode('utf-8'))
+		ser.write(("LED=" + "1,0,0" +'\n').encode('utf-8'))
 		sleep(5)
 
 		while ser.in_waiting > 0:
