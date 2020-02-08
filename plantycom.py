@@ -43,6 +43,7 @@ try:
 	power = plantyDatas[0].getElementsByTagName("power")[0].firstChild.data.strip()
 	samples = plantyDatas[0].getElementsByTagName("samples")[0].firstChild.data.strip()
 	moisThres = plantyDatas[0].getElementsByTagName("mois_thres")[0].firstChild.data.strip()
+	setpoint = plantyDatas[0].getElementsByTagName("setpoint")[0].firstChild.data.strip()
 	#nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
 	
 	if(int(sys.argv[4]) == 1):
@@ -165,19 +166,6 @@ try:
 	
 	rec = ""	
 	
-	#ser.write("MOTR=2"+'\n')
-	#sleep(0.5)
-
-	#while ser.in_waiting > 0:
-	#	rec = ser.readline()
-		
-	#if not(checkOK(rec)):
-	#	raise Exception("Command: " + rec + "returned an error")
-		
-	#motor = getCommandValue(rec)
-	
-	#rec = ""
-	
 	ser.write(("ALS"+'\n').encode('utf-8'))
 	sleep(0.5)
 
@@ -189,26 +177,69 @@ try:
 		
 	ALS = getCommandValue(rec)
 	
-	rec = ""	
+	rec = ""
 	
-	if(float(mois) < float(moisThres) and nightMode == True):
+	
+	if(float(mois) < float(moisThres) and nightMode == False):
 		
 		ser.write(("MOTR=1,"+str(power)+","+str(duration)+'\n').encode('utf-8'))
 		motor = str(power)+","+str(duration)
 		sleep(int(duration)/1000)
 
-	elif (float(mois) > float(moisThres) and nightMode == True):
+	elif (float(mois) > float(moisThres) and nightMode == False):
 		motor = "0"
 	else:
 		motor = "-1"
 		
 	data = PlantyData(motor,mois,temp,hum,plant,ALS)
 	
+	if(nightMode):
+		ser.write(("PI=1"+'\n').encode('utf-8'))
+		sleep(0.5)
+
+		while ser.in_waiting > 0:
+			rec = ser.readline()
+		
+		if not(checkOK(rec)):
+			raise Exception("Command: " + rec + "returned an error")
+		
+		PI = getCommandValue(rec)
+		
+		if(int(PI) == 1):
+			ser.write(("PI=2,0" + '\n').encode('utf-8'))
+			sleep(0.5)
+
+			while ser.in_waiting > 0:
+				rec = ser.readline()
+		
+			if not(checkOK(rec)):
+				raise Exception("Command: " + rec + "returned an error")
+	else:
+		ser.write(("PI=1"+'\n').encode('utf-8'))
+		sleep(0.5)
+
+		while ser.in_waiting > 0:
+			rec = ser.readline()
+		
+		if not(checkOK(rec)):
+			raise Exception("Command: " + rec + "returned an error")
+		
+		PI = getCommandValue(rec)
+		if(int(PI) == 0):
+			ser.write(("PI=2,1," + setpoint + '\n').encode('utf-8'))
+			sleep(0.5)
+
+			while ser.in_waiting > 0:
+				rec = ser.readline()
+		
+			if not(checkOK(rec)):
+				raise Exception("Command: " + rec + "returned an error")
+	
 	if(takePic):
 		
 		rec = ""
 		
-		ser.write(("PI=" + "0" +'\n').encode('utf-8'))
+		ser.write(("PI=" + "2,0" +'\n').encode('utf-8'))
 		sleep(5)
 	
 		ser.write(("LED=" + "1,2,255" +'\n').encode('utf-8'))
@@ -230,7 +261,7 @@ try:
 		ser.write(("LED=" + "1,0,0" +'\n').encode('utf-8'))
 		sleep(5)
 		
-		ser.write(("PI=" + "1,20000" +'\n').encode('utf-8'))
+		ser.write(("PI=" + "2,1," + setpoint +'\n').encode('utf-8'))
 		sleep(5)
 
 		while ser.in_waiting > 0:

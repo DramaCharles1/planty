@@ -21,7 +21,7 @@ double maxControl = 43000;
 double minControl = 0;
 double Kp = 1;
 double Ki = 0;
-int T = 500; //ms?
+int T = 200; //ms?
 unsigned long lastTime;
 bool runPI = false;
 
