@@ -10,6 +10,22 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 #define LED_INPIN 7
 #define WATER_INTERUPT 2
 
+//PI control stuff
+double setpoint = 20000;
+double error;
+double totalError;
+double lastError;
+double sensedOutput;
+double controlSignal;
+double maxControl = 43000;
+double minControl = 0;
+double Kp = 1;
+double Ki = 0;
+int T = 500; //ms?
+unsigned long lastTime;
+bool runPI = false;
+
+
 Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB + NEO_KHZ800);
 uint32_t purple = strip.Color(255, 0, 255);
 uint32_t white = strip.Color(255, 255, 255);
@@ -72,6 +88,8 @@ void loop()
   if (ALSready == false) {
     startALS();
   }
+
+  if (runPI) PI_control();
 
   if (serialFlag == true && stringComplete == true)
   {
@@ -227,19 +245,19 @@ void loop()
       {
         int LEDparam = -1;
         LEDparam = ets.substring(ets.indexOf('=') + 1).toInt();
-        
+
         if (LEDparam == 1) {
 
           String retcolor = "";
           int color = ets.substring(ets.indexOf(',') + 1).toInt();
           int bright = ets.substring(ets.indexOf('=') + 5).toInt();
 
-          if(bright > 255){
+          if (bright > 255) {
             bright = 255;
           }
 
           if (color == 0 || color == 1 || color == 2 || color == 3 || color == 4 || color == 5) {
-            setLED(color,bright);
+            setLED(color, bright);
 
             switch (color) {
               case 0:
@@ -275,10 +293,42 @@ void loop()
           uint32_t qcolor = strip.getPixelColor(11);
           Serial.println(action + "=" + LEDparam + qcolor + ",OK");
         }
-        else{
+        else {
           Serial.println(action + "=" + LEDparam + ",ERR");
         }
 
+      }
+      else if (action == "PISET") {
+        Kp = ets.substring(ets.indexOf('=') + 1).toDouble();
+        Ki = ets.substring(ets.indexOf(',') + 1).toDouble();
+        T = ets.substring(ets.indexOf(',') + 1).toDouble();
+        //Mer fix krävs här
+      }
+      else if (action == "PI") {
+        int PIok = -1;
+
+        if (ets.substring(ets.indexOf('=') + 1).toInt() == 1) {
+          if (runPI) PIok = 1;
+          else PIok = 0;
+
+          Serial.println(action + "=" + PIok + ",OK");
+
+        }
+
+        else if (ets.substring(ets.indexOf('=') + 1).toInt() == 2) {
+          if (ets.substring(ets.indexOf('=') + 3).toInt() == 0) runPI = false;
+          else if (ets.substring(ets.indexOf('=') + 3).toInt() == 1) runPI = true;
+
+          if (runPI) PIok = 1;
+          else PIok = 0;
+
+          if (!runPI) setLED(0, 0);
+          else {
+            setpoint = ets.substring(ets.indexOf('=') + 5).toDouble();
+          }
+
+          Serial.println(action + "=" + PIok + "," + setpoint + ",OK");
+        }
       }
     }
 
@@ -316,7 +366,7 @@ boolean checkCommand(String in)
 
   String action = getAction(in);
 
-  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT" || action == "ALS" || action == "LED")
+  if (action == "MOTR" || action == "MOIS" || action == "TEMP" || action == "PLANT" || action == "ALS" || action == "LED" || action == "PI" || action == "PISET")
   {
     return true;
   }
@@ -458,14 +508,41 @@ void setLED(int color, int bright) {
   }
 }
 
-void ButtonWater(){
-  while(digitalRead(WATER_INTERUPT) == LOW){
+void ButtonWater() {
+  while (digitalRead(WATER_INTERUPT) == LOW) {
     analogWrite(motorTranPin, 255.0);
     digitalWrite(boardLed, HIGH);
   }
 
   delay(100);
-  
+
   analogWrite(motorTranPin, 0.0);
   digitalWrite(boardLed, LOW);
+}
+
+void PI_control() {
+  unsigned long currentTime = millis();
+  int deltaTime = currentTime - lastTime;
+
+  if (deltaTime >= T) {
+    uint16_t ALS = veml.readALS();
+    sensedOutput = (double) ALS;
+    double error = setpoint - sensedOutput;
+
+    totalError += error; //accumalates the error - integral term
+
+    if (totalError >= maxControl) totalError = maxControl;
+    else if (totalError <= minControl) totalError = minControl;
+
+    controlSignal = Kp * error + (Ki * T) * totalError;
+    if (controlSignal > maxControl) controlSignal = maxControl;
+    else if (controlSignal < minControl) controlSignal = minControl;
+
+    int brightControl = (controlSignal / maxControl) * 255;
+
+    setLED(2, brightControl);
+
+    lastError = error;
+    lastTime = currentTime;
+  }
 }

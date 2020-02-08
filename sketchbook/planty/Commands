@@ -34,10 +34,29 @@ return:
 ALS=<parameter>,OK
 
 Send:
-LED=<parameter>
+LED=<read/write>,<color>,<brightness>
+<read/write>: 1=write, 2=read
 <parameter>: 0=off, 1=purple, 2=white, 3=red, 4=green, 5=blue
+<brightness>: 0-255
 Return:
 LED=<parameter>,OK
+
+Send:
+PI=<read status>,<on/off>,<setpoint>
+<read status>: 1=read, 2=write
+<on/off>: 0=off, 1=on
+<setpoint>: [double]
+
+
+
+PI=<on/off>,<setpoint>,<Kp>,<Ki>,<MaxControl>
+<on/off>: 0=off, 1=on
+<setpoint>: 0-43000 [double]
+<Kp>: [double]
+<Ki>: [double]
+<MaxControl>: [double]
+Return:
+PI=<on/off>,<setpoint>,<Kp>,<Ki>,<MaxControl>,OK
 
 Send:
 LIGHT=<parameter>

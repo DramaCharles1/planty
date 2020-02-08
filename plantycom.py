@@ -207,6 +207,9 @@ try:
 	if(takePic):
 		
 		rec = ""
+		
+		ser.write(("PI=" + "0" +'\n').encode('utf-8'))
+		sleep(5)
 	
 		ser.write(("LED=" + "1,2,255" +'\n').encode('utf-8'))
 		sleep(5)
@@ -225,6 +228,9 @@ try:
 		rec = ""
 	
 		ser.write(("LED=" + "1,0,0" +'\n').encode('utf-8'))
+		sleep(5)
+		
+		ser.write(("PI=" + "1,20000" +'\n').encode('utf-8'))
 		sleep(5)
 
 		while ser.in_waiting > 0:

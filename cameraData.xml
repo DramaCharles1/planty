@@ -12,6 +12,9 @@
     <mois_thres>
       400
     </mois_thres>
+    <setpoint>
+      10000
+    </setpoint>
   </planty_data>
   <cam_data>
     <pic_dir>/media/pi/USB</pic_dir>
