@@ -49,7 +49,8 @@ PI=<read status>,<on/off>,<setpoint>
 Return:
 PI=<read status>,<on/off>,<setpoint>,OK
 
-PISET=<Kp>,<Ki>,<T>,<Max control>
+PISET=<read/write>,<Kp>,<Ki>,<T>,<Max control>
+<read/write>: 1=read parameters, 2=write parameters [int]
 <Kp>: [double]
 <Ki>: [double]
 <T>: [double]

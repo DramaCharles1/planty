@@ -11,7 +11,7 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 #define WATER_INTERUPT 2
 
 //PI control stuff
-double setpoint = 20000;
+double setpoint = 0;
 double error;
 double totalError;
 double lastError;
@@ -19,7 +19,7 @@ double sensedOutput;
 double controlSignal;
 double maxControl = 43000;
 double minControl = 0;
-double Kp = 1;
+double Kp = 0;
 double Ki = 0;
 int T = 200; //ms?
 unsigned long lastTime;
@@ -299,18 +299,25 @@ void loop()
 
       }
       else if (action == "PISET") {
-        Kp = ets.substring(ets.indexOf('=') + 1,ets.indexOf(',') - 1).toDouble();
-        int oldindex = ets.indexOf(',');
+        if (ets.substring(ets.indexOf('=') + 1).toInt() == 1) {
+          Serial.println(action + "=" + Kp + "," + Ki + "," + T + "," + maxControl + ",OK");
         
-        Ki = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
-        oldindex = ets.indexOf(',', oldindex + 1);
-        
-        T = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
-        oldindex = ets.indexOf(',', oldindex + 1);
-        
-        maxControl = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+        } else if (ets.substring(ets.indexOf('=') + 1).toInt() == 2) {
+          int oldindex = ets.indexOf(',');
+          Kp = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+          
+          oldindex = ets.indexOf(',', oldindex + 1);
+          Ki = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+          oldindex = ets.indexOf(',', oldindex + 1);
 
-        Serial.println(action + "=" + Kp + "," + Ki + "," + T + "," + maxControl + ",OK");
+          T = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+          oldindex = ets.indexOf(',', oldindex + 1);
+
+          maxControl = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+
+          Serial.println(action + "=" + Kp + "," + Ki + "," + T + "," + maxControl + ",OK");
+        }
+
       }
       else if (action == "PI") {
         int PIok = -1;

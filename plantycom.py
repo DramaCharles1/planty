@@ -215,7 +215,7 @@ try:
 			if not(checkOK(rec)):
 				raise Exception("Command: " + rec + "returned an error")
 	else:
-		ser.write(("PI=1"+'\n').encode('utf-8'))
+		ser.write(("PI=2,1," + setpoint + '\n').encode('utf-8'))
 		sleep(0.5)
 
 		while ser.in_waiting > 0:
@@ -223,17 +223,6 @@ try:
 		
 		if not(checkOK(rec)):
 			raise Exception("Command: " + rec + "returned an error")
-		
-		PI = getCommandValue(rec)
-		if(int(PI) == 0):
-			ser.write(("PI=2,1," + setpoint + '\n').encode('utf-8'))
-			sleep(0.5)
-
-			while ser.in_waiting > 0:
-				rec = ser.readline()
-		
-			if not(checkOK(rec)):
-				raise Exception("Command: " + rec + "returned an error")
 	
 	if(takePic):
 		

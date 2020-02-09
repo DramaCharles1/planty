@@ -13,7 +13,7 @@
       400
     </mois_thres>
     <setpoint>
-      20000
+      30000
     </setpoint>
   </planty_data>
   <cam_data>
