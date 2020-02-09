@@ -46,17 +46,16 @@ PI=<read status>,<on/off>,<setpoint>
 <read status>: 1=read, 2=write
 <on/off>: 0=off, 1=on
 <setpoint>: [double]
+Return:
+PI=<read status>,<on/off>,<setpoint>,OK
 
-
-
-PI=<on/off>,<setpoint>,<Kp>,<Ki>,<MaxControl>
-<on/off>: 0=off, 1=on
-<setpoint>: 0-43000 [double]
+PISET=<Kp>,<Ki>,<T>,<Max control>
 <Kp>: [double]
 <Ki>: [double]
-<MaxControl>: [double]
+<T>: [double]
+<Max control>: [double]
 Return:
-PI=<on/off>,<setpoint>,<Kp>,<Ki>,<MaxControl>,OK
+PISET=<Kp>,<Ki>,<T>,<Max control>,OK
 
 Send:
 LIGHT=<parameter>

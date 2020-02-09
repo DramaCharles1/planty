@@ -299,10 +299,18 @@ void loop()
 
       }
       else if (action == "PISET") {
-        Kp = ets.substring(ets.indexOf('=') + 1).toDouble();
-        Ki = ets.substring(ets.indexOf(',') + 1).toDouble();
-        T = ets.substring(ets.indexOf(',') + 1).toDouble();
-        //Mer fix krävs här
+        Kp = ets.substring(ets.indexOf('=') + 1,ets.indexOf(',') - 1).toDouble();
+        int oldindex = ets.indexOf(',');
+        
+        Ki = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+        oldindex = ets.indexOf(',', oldindex + 1);
+        
+        T = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+        oldindex = ets.indexOf(',', oldindex + 1);
+        
+        maxControl = ets.substring(oldindex + 1, ets.indexOf(',', oldindex + 1)).toDouble();
+
+        Serial.println(action + "=" + Kp + "," + Ki + "," + T + "," + maxControl + ",OK");
       }
       else if (action == "PI") {
         int PIok = -1;
