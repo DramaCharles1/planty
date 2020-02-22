@@ -551,7 +551,7 @@ void PI_control() {
     if (totalError >= maxControl) totalError = maxControl;
     else if (totalError <= minControl) totalError = minControl;
 
-    controlSignal = Kp * error + (Ki * T) * totalError;
+    controlSignal = Kp * error + (Ki * T * 0.001) * totalError;
     if (controlSignal > maxControl) controlSignal = maxControl;
     else if (controlSignal < minControl) controlSignal = minControl;
 

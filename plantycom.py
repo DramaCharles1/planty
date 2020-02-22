@@ -216,7 +216,7 @@ try:
 				raise Exception("Command: " + rec + "returned an error")
 	else:
 		
-		ser.write(("PISET=2,1.0,0.0,300,43000" + '\n').encode('utf-8'))
+		ser.write(("PISET=2,1.0,1.75,200,43000" + '\n').encode('utf-8'))
 		sleep(0.5)
 
 		while ser.in_waiting > 0:
