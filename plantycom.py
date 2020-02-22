@@ -215,6 +215,16 @@ try:
 			if not(checkOK(rec)):
 				raise Exception("Command: " + rec + "returned an error")
 	else:
+		
+		ser.write(("PISET=2,1.0,0.0,300,43000" + '\n').encode('utf-8'))
+		sleep(0.5)
+
+		while ser.in_waiting > 0:
+			rec = ser.readline()
+		
+		if not(checkOK(rec)):
+			raise Exception("Command: " + rec + "returned an error")
+		
 		ser.write(("PI=2,1," + setpoint + '\n').encode('utf-8'))
 		sleep(0.5)
 

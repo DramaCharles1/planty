@@ -7,13 +7,13 @@
       100
     </power>
     <samples>
-      5
+      10
     </samples>
     <mois_thres>
       400
     </mois_thres>
     <setpoint>
-      30000
+      25000
     </setpoint>
   </planty_data>
   <cam_data>
