@@ -22,8 +22,8 @@ upperGreen = [int(CameraDatas[0].getElementsByTagName("upper_green")[0].getAttri
 datime = datetime.now().replace(microsecond=0).isoformat()
 
 picn = "2020-02-22T12:00:11.jpg"
-picn = "2020-02-20T12:00:11.jpg"
-picn = "2020-02-19T12:00:12.jpg"
+#picn = "2020-02-20T12:00:11.jpg"
+#picn = "2020-02-19T12:00:12.jpg"
 #picn = "/media/pi/USB/2020-02-22T12:00:11.jpg"
 
 plantCam = plantyCamera(picd, picn, picCopy, lowerGreen, upperGreen)

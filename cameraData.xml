@@ -10,7 +10,7 @@
       10
     </samples>
     <mois_thres>
-      400
+      500
     </mois_thres>
     <setpoint>
       20000
