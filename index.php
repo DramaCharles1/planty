@@ -30,10 +30,16 @@ $camerarow_cnt = $cameraresult->num_rows;
 
 //$dir="/media/savestuff";
 $temp = "/var/www/html/Images/hej.jpg";
-$dir="var/www/html/Images";
+$image = "2020-02-23T12:00:12.jpg";
+$dir="/var/www/html/Images";
 $images = glob($dir . "/*.jpg");
- 
-//echo $images[count($images)-1]; 
+
+$test = ("Images/" . $image);
+
+$image1 = str_replace("/var/www/html/","",$images[count($images)-1]); 
+$image2 = str_replace("/var/www/html/","",$images[count($images)-2]); 
+$image3 = str_replace("/var/www/html/","",$images[count($images)-3]); 
+$image4 = str_replace("/var/www/html/","",$images[count($images)-4]); 
 
 ?>
 
@@ -57,8 +63,11 @@ $images = glob($dir . "/*.jpg");
 <body>
 	<h1>Planty McPlantface</h1>
 	
-	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
-	
+	<img src="<?php echo $image1 ?>" width="512" height="384" alt="image 1" align="top"/>
+	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>
+	<img src="<?php echo $image3 ?>" width="512" height="384" alt="image 3" align="top"/>
+	<img src="<?php echo $image4 ?>" width="512" height="384" alt="image 3" align="top"/>
+
  	<?php 
 		echo "<table style=\"width:75%\">
 				<tr> 
@@ -123,6 +132,8 @@ $images = glob($dir . "/*.jpg");
 		echo "</table>";
 		$cameraresult->free();
  	?>
+ 	
+ 	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
 	
 </body>
 
