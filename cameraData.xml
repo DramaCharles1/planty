@@ -19,7 +19,7 @@
   <cam_data>
     <pic_dir>/media/pi/USB</pic_dir>
     <pic_copy_dir>/var/www/html/Images</pic_copy_dir>
-    <lower_green l1="60" l2="60" l3="60"> </lower_green>
-    <upper_green u1="80" u2="255" u3="255"> </upper_green> 
+    <lower_green l1="30" l2="50" l3="50"> </lower_green>
+    <upper_green u1="80" u2="250" u3="250"> </upper_green> 
   </cam_data>
 </planty> 
