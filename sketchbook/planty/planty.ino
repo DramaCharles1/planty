@@ -77,7 +77,7 @@ void setup()
 
   pinMode(WATER_INTERUPT, INPUT_PULLUP);
   //pinMode(RESET_GO, INPUT_PULLDOWN);
-  //attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, LOW);
   //Serial.println("Welcome!");
 
 }
@@ -526,7 +526,6 @@ void setLED(int color, int bright) {
 }
 
 void ButtonWater() {
-  Serial.println("cp");
   while (digitalRead(WATER_INTERUPT) == LOW) {
     analogWrite(motorTranPin, 255.0);
     digitalWrite(boardLed, HIGH);
