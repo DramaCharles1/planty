@@ -186,7 +186,7 @@ try:
 		motor = str(power)+","+str(duration)
 		sleep(int(duration)/1000)
 
-	elif (float(mois) > float(moisThres) and nightMode == False):
+	elif (float(mois) >= float(moisThres) and nightMode == False):
 		motor = "0"
 	else:
 		motor = "-1"
