@@ -19,12 +19,12 @@ if ($conn->connect_error) {
 //echo "Connected successfully \n";
   
 //$sql="SELECT * FROM plantyLog";
-$plantsql="SELECT * FROM plantyLog order by datetime desc limit 24";
+$plantsql="SELECT * FROM plantyLog order by datetime desc limit 48";
 $plantresult = $conn->query($plantsql);
 $plantrow_cnt = $plantresult->num_rows;
 
 //$sql="SELECT * FROM plantyLog";
-$camerasql="SELECT * FROM cameraLog order by datetime desc limit 24";
+$camerasql="SELECT * FROM cameraLog order by datetime desc limit 10";
 $cameraresult = $conn->query($camerasql);
 $camerarow_cnt = $cameraresult->num_rows;
 

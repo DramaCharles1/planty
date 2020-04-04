@@ -10,6 +10,8 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 #define LED_INPIN 7
 #define WATER_INTERUPT 2
 #define RESET_GO 5
+#define RX_LED 12
+#define RX 0
 
 //PI control stuff
 double setpoint = 0;
@@ -71,14 +73,17 @@ void setup()
   pinMode(motorTranPin, OUTPUT);
   pinMode(moisSensorTranPin, OUTPUT); // A1
   pinMode(boardLed, OUTPUT);
+  pinMode(RX_LED, OUTPUT);
   //pinMode(LEDin, OUTPUT);
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
   analogWrite(motorTranPin, 0); //power off
 
   pinMode(WATER_INTERUPT, INPUT_PULLUP);
   //pinMode(RESET_GO, INPUT_PULLDOWN);
-  attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, LOW);
+  //attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, LOW);
   //Serial.println("Welcome!");
+
+  digitalWrite(RX_LED, LOW); 
 
 }
 
@@ -365,7 +370,11 @@ void loop()
 
 void serialEvent() {
   //statements
+  
   while (Serial.available()) {
+    
+    digitalWrite(RX_LED, HIGH); 
+    
     // get the new byte:
     char rec = (char)Serial.read();
     // add it to the inputString:
@@ -374,7 +383,10 @@ void serialEvent() {
       stringComplete = true;
     }
     serialFlag = true;
+
+    digitalWrite(RX_LED, LOW); 
   }
+
 }
 
 boolean checkCommand(String in)
