@@ -59,7 +59,7 @@ Return:
 PISET=<Kp>,<Ki>,<T>,<Max control>,OK
 
 Reboot:
-PISET=2,1.0,0.0,200,43000
+PISET=2,1.0,0.0,200,50000
 PI=2,1,30000
 
 Send:

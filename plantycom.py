@@ -44,6 +44,8 @@ try:
 	samples = plantyDatas[0].getElementsByTagName("samples")[0].firstChild.data.strip()
 	moisThres = plantyDatas[0].getElementsByTagName("mois_thres")[0].firstChild.data.strip()
 	setpoint = plantyDatas[0].getElementsByTagName("setpoint")[0].firstChild.data.strip()
+	maxControl = plantyDatas[0].getElementsByTagName("max_control")[0].firstChild.data.strip()
+
 	#nightModetmp = plantyDatas[0].getElementsByTagName("nightmode")[0].firstChild.data.strip()
 	
 	if(int(sys.argv[4]) == 1):
@@ -215,8 +217,8 @@ try:
 			if not(checkOK(rec)):
 				raise Exception("Command: " + rec + "returned an error")
 	else:
-		
-		ser.write(("PISET=2,1.0,1.75,200,43000" + '\n').encode('utf-8'))
+		maxControl
+		ser.write(("PISET=2,1.0,1.75,200," + maxControl + '\n').encode('utf-8'))
 		sleep(0.5)
 
 		while ser.in_waiting > 0:

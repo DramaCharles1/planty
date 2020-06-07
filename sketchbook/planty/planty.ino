@@ -8,9 +8,9 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 #define LED_COUNT 24
 #define LED_PIN 4
 #define LED_INPIN 7
-#define WATER_INTERUPT 2
+#define WATER_INTERUPT 6
 #define RESET_GO 5
-#define RX_LED 12
+#define RX_LED 5
 #define RX 0
 
 //PI control stuff
@@ -20,7 +20,7 @@ double totalError;
 double lastError;
 double sensedOutput;
 double controlSignal;
-double maxControl = 43000;
+double maxControl = 25500;
 double minControl = 0;
 double Kp = 0;
 double Ki = 0;
@@ -78,7 +78,7 @@ void setup()
   //digitalWrite(motorTranPin, LOW);  // turn off the motor
   analogWrite(motorTranPin, 0); //power off
 
-  pinMode(WATER_INTERUPT, INPUT_PULLUP);
+  //pinMode(WATER_INTERUPT, INPUT_PULLUP);
   //pinMode(RESET_GO, INPUT_PULLDOWN);
   //attachInterrupt(digitalPinToInterrupt(WATER_INTERUPT), ButtonWater, LOW);
   //Serial.println("Welcome!");
@@ -501,6 +501,7 @@ void setLED(int color, int bright) {
   if (color == 1) {
     //digitalWrite(LED_PIN, HIGH);
     strip.fill(purple, 0);
+    strip.setBrightness(bright);
     //strip.setPixelColor(0, 255, 0, 255);
     strip.show();
   }
@@ -538,6 +539,9 @@ void setLED(int color, int bright) {
 }
 
 void ButtonWater() {
+
+  Serial.println("Water!");
+  
   while (digitalRead(WATER_INTERUPT) == LOW) {
     analogWrite(motorTranPin, 255.0);
     digitalWrite(boardLed, HIGH);
@@ -569,7 +573,7 @@ void PI_control() {
 
     int brightControl = (controlSignal / maxControl) * 255;
 
-    setLED(2, brightControl);
+    setLED(1, brightControl);
 
     lastError = error;
     lastTime = currentTime;
