@@ -15,6 +15,7 @@ Create database
 CREATE DATABASE planty;
 CREATE TABLE plantyLog(plant VARCHAR(10) NOT NULL, motor VARCHAR(10) NOT NULL, temperature VARCHAR(10) NOT NULL, humidity VARCHAR(10) NOT NULL, ALS VARCHAR(10) NOT NULL, moisture VARCHAR(10) NOT NULL, datetime DATETIME NOT NULL)
 CREATE TABLE cameraLog(orgpixel INT NOT NULL, greenpixel INT NOT NULL, greenpercent FLOAT NOT NULL, datetime DATETIME NOT NULL)
+create table inputData(duration INT NOT NULL, power INT NOT NULL, samples INT NOT NULL, moisThres INT NOT NULL, lightSetPoint INT NOT NULL, maxLight INT NOT NULL, datetime DATETIME NOT NULL);
 Example: 
 INSERT INTO table_name (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES ("Basil","-1","24.00","46.00","69","43.00","2019-12-19T22:07:25") 
 
@@ -28,6 +29,13 @@ apt-get -y install php7.0 libapache2-mod-php7.0
 
 Arduino 
 Install latest Linux ARM 32bit version
+
+Install JPGraph
+tarball into /etc/php/7.3 (check php --ini where php is located)
+Example:
+root:/tmp> tar xzf jpgraph-2.5.tar.gz
+root:/tmp> cp -r jpgraph-2.5 /usr/shar/php/
+root:/tmp> ln -s /usr/shar/php/jpgraph-2.5 /usr/shar/php/jpgraph
 
 ##plantycom.py duration power samples moisThres nightMode
 #SAVE image handling to log!
