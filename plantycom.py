@@ -318,12 +318,18 @@ try:
 	
 	insert_stmt = "INSERT INTO plantyLog (plant,motor,temperature,humidity,ALS,moisture,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 	logData = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
-	myCursor.execute(insert_stmt, logData)
+	myCursor.execute(insert_stmt, logData)	
+	
+	insertDataStmt = "INSERT INTO inputData(duration,power,samples,moisThres,lightSetPoint,maxLight,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+	logInputData = (duration,power,samples,moisThres,setpoint,maxControl,data.timeStamp)
+	myCursor.execute(insertDataStmt, logInputData)
 	
 	if(takePic):
 		insert_stmt = "INSERT INTO cameraLog (orgpixel,greenpixel,greenpercent,datetime) VALUES (%s,%s,%s,%s)"
 		logCamData = (cam.org_pixel,cam.green_pixel,cam.green_percentage,data.timeStamp)
 		myCursor.execute(insert_stmt, logCamData)
+		
+		
 		
 	myCursor.close()
 	
