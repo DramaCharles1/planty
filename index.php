@@ -35,6 +35,7 @@ $image4 = str_replace("/var/www/html/","",$images[count($images)-4]);
 
 $moisPlot = "MoisturePlot.png";
 $greenPlot = "GreenPlot.png";
+$lightPlot = "LightPlot.png";
 
 ?>
 
@@ -62,6 +63,11 @@ $greenPlot = "GreenPlot.png";
 	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>
 	<img src="<?php echo $image3 ?>" width="512" height="384" alt="image 3" align="top"/>
 	<img src="<?php echo $image4 ?>" width="512" height="384" alt="image 3" align="top"/>
+
+	<img src="<?php echo $moisPlot ?>" width="512" height="384" alt="Moisture plot" align="top"/>
+ 	<img src="<?php echo $greenPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
+ 	<img src="<?php echo $lightPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
+ 	
 
  	<?php 
 		echo "<table style=\"width:75%\">
@@ -127,8 +133,6 @@ $greenPlot = "GreenPlot.png";
 		echo "</table>";
 		$cameraresult->free();
  	?>
- 	<img src="<?php echo $moisPlot ?>" width="512" height="384" alt="Moisture plot" align="top"/>
- 	<img src="<?php echo $greenPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
  	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
 	
 </body>

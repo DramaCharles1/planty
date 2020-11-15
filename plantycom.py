@@ -323,47 +323,6 @@ try:
 	logData = (data.plant,data.motor,data.temperature,data.humidity,data.ALS,data.moisture,data.timeStamp)
 	myCursor.execute(insert_stmt, logData)	
 	
-	ydataMois_query = "select moisture from plantyLog order by datetime desc limit 24"
-	myCursor.execute(ydataMois_query)	
-	ydataMois = myCursor.fetchall()
-	
-	xdataMois_query = "select datetime from plantyLog order by datetime desc limit 24"
-	myCursor.execute(xdataMois_query)	
-	xdataMois = myCursor.fetchall()
-	
-	ydataMoisThres_query = "select moisThres from inputData order by datetime desc limit 1"
-	myCursor.execute(ydataMoisThres_query)
-	moisThresVal = myCursor.fetchall()[0][0]
-	
-	xdataGreen_query = "select datetime from cameraLog order by datetime desc limit 7"
-	myCursor.execute(xdataGreen_query)	
-	xdataGreen = myCursor.fetchall()
-	
-	ydataGreen_query = "select greenpercent from cameraLog order by datetime desc limit 7"
-	myCursor.execute(ydataGreen_query)	
-	ydataGreen = myCursor.fetchall()
-	
-	green = []
-	timestamp_green = []
-	mois = []
-	timestamp = []
-	moisThres = []
-	
-	for moisIndex in ydataMois:
-		mois.append(moisIndex[0])
-		
-	for timestampIndex in xdataMois:
-		timestamp.append(timestampIndex[0])
-		
-	for x in range(len(ydataMois)):
-		moisThres.append(str(moisThresVal))
-		
-	for greenIndex in ydataGreen:
-		green.append(greenIndex[0])
-		
-	for greenTimestampIndex in xdataGreen:
-		timestamp_green.append(greenTimestampIndex[0])		
-	
 	if(takePic):
 		insert_stmt = "INSERT INTO cameraLog (orgpixel,greenpixel,greenpercent,datetime) VALUES (%s,%s,%s,%s)"
 		logCamData = (cam.org_pixel,cam.green_pixel,cam.green_percentage,data.timeStamp)
@@ -371,8 +330,46 @@ try:
 		
 		insertDataStmt = "INSERT INTO inputData(duration,power,samples,moisThres,lightSetPoint,maxLight,datetime) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 		logInputData = (duration,power,samples,moisThres,setpoint,maxControl,data.timeStamp)
-		myCursor.execute(insertDataStmt, logInputData)
-			
+		myCursor.execute(insertDataStmt, logInputData)	
+	
+	mois_query = "select moisture, datetime from plantyLog order by datetime desc limit 24"
+	myCursor.execute(mois_query)	
+	dataMois = myCursor.fetchall()
+	
+	xmois = []
+	ymois = []
+	for entry in dataMois:
+		xmois.append(entry[1])
+		ymois.append(float(entry[0]))
+		
+	MoisThres_query = "select moisThres from inputData order by datetime desc limit 1"
+	myCursor.execute(MoisThres_query)
+	moisThresVal = myCursor.fetchall()[0][0]
+	
+	y2mois = []
+	for x in range(len(ymois)):
+		y2mois.append(float(moisThresVal))
+		
+	Green_query = "select greenpercent, datetime from cameraLog order by datetime desc limit 7"
+	myCursor.execute(Green_query)	
+	dataGreen = myCursor.fetchall()
+	
+	xgreen = []
+	ygreen = []
+	for entry in dataMois:
+		xgreen.append(entry[1])
+		ygreen.append(float(entry[0]))
+		
+	dataLight_query = "select ALS, datetime from plantyLog order by datetime desc limit 24"
+	myCursor.execute(dataLight_query)	
+	dataLight = myCursor.fetchall()
+	
+	xlight = []
+	ylight = []
+	for entry in dataLight:
+		xlight.append(entry[1])
+		ylight.append(float(entry[0]))
+	
 	myCursor.close()
 	
 	conn.commit()
@@ -383,34 +380,18 @@ except mysql.connector.Error as e:
 	
 moisPlotName  = "/media/pi/USB/" + "MoisturePlot.png"
 moisPlotCopy = "/var/www/html/" + "MoisturePlot.png"
-moisPlot = Plots(timestamp,moisThres,mois,"Timestamp","Moisture",moisPlotName,"moisture low limit","moisture")
+moisPlot = Plots(xmois,y2mois,ymois,"Timestamp","Moisture",moisPlotName,"moisture low limit","moisture")
 moisPlot.Create2linePlot()
 copyfile(moisPlotName,moisPlotCopy)
 
 greenPlotName  = "/media/pi/USB/" + "GreenPlot.png"
 greenPlotCopy = "/var/www/html/" + "GreenPlot.png"
-greenPlot = Plots(timestamp_green,green,[],"Timestamp","Growth",greenPlotName,"Growth","")
+greenPlot = Plots(xgreen,ygreen,[],"Timestamp","Growth",greenPlotName,"Growth","")
 greenPlot.CreatelinePlot()
 copyfile(greenPlotName,greenPlotCopy)
-	
-# plt.plot(timestamp, moisThres, label = "moisture low limit")
-# plt.plot(timestamp, mois, label = "moisture")
-# plt.xlabel('Timestamp') 
-# plt.ylabel('Moisture') 
-# plt.legend()
-# #plt.show()
-# plotName  = "/media/pi/USB/" + "moisturePlot.png"
-# plotCopy = "/var/www/html/" + "moisturePlot.png"
-# plt.savefig(plotName,bbox_inches='tight')
-# copyfile(plotName,plotCopy)
 
-# plt.plot(timestamp_green, green, label = "Growth", color = "green")
-# plt.xlabel('Timestamp') 
-# plt.ylabel('Growth') 
-# plt.legend()
-# plotName  = "/media/pi/USB/" + "GreenPlot.png"
-# plotCopy = "/var/www/html/" + "GreenPlot.png"
-# #plt.show()
-# plt.savefig(plotName,bbox_inches='tight')
-# copyfile(plotName,plotCopy)
-
+lightPlotName  = "/media/pi/USB/" + "LightPlot.png"
+lightPlotCopy = "/var/www/html/" + "LightPlot.png"
+lightPlot = Plots(xlight,ylight,[],"Timestamp","Light",lightPlotName,"Light","")
+lightPlot.CreatelinePlot()
+copyfile(lightPlotName,lightPlotCopy)

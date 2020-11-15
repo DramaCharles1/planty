@@ -11,21 +11,23 @@ class Plots:
 		self.label = label
 		self.label2 = label2
 		self.fileName = fileName
+		self.fig, self.ax = plt.subplots()
+		#self.thisPlot = plt.subplot(Plots.rows,Plots.cols,Plots.index)
 			
 	def CreatelinePlot(self):
-		plt.plot(self.xdata, self.ydata, label = self.label, color = "green")
+		self.ax.plot(self.xdata, self.ydata, label = self.label, color = "green")
 		plt.xlabel(self.xlabel) 
 		plt.ylabel(self.ylabel) 
-		plt.legend()
+		self.ax.legend()
 		#plt.show()
 		plt.savefig(self.fileName,bbox_inches='tight')
 		
 	def Create2linePlot(self):
-		plt.plot(self.xdata, self.ydata, label = self.label)
-		plt.plot(self.xdata, self.y2data, label = self.label2)
+		self.ax.plot(self.xdata, self.ydata, label = self.label)
+		self.ax.plot(self.xdata, self.y2data, label = self.label2)
 		plt.xlabel(self.xlabel) 
 		plt.ylabel(self.ylabel) 
-		plt.legend()
+		self.ax.legend()
 		#plt.show()
 		plt.savefig(self.fileName,bbox_inches='tight')
 		
