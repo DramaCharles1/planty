@@ -30,12 +30,8 @@ apt-get -y install php7.0 libapache2-mod-php7.0
 Arduino 
 Install latest Linux ARM 32bit version
 
-Install JPGraph
-tarball into /etc/php/7.3 (check php --ini where php is located)
-Example:
-root:/tmp> tar xzf jpgraph-2.5.tar.gz
-root:/tmp> cp -r jpgraph-2.5 /usr/shar/php/
-root:/tmp> ln -s /usr/shar/php/jpgraph-2.5 /usr/shar/php/jpgraph
+Install matplotlib
+pip install matplotlib
 
 ##plantycom.py duration power samples moisThres nightMode
 #SAVE image handling to log!
