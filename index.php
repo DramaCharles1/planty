@@ -64,75 +64,19 @@ $lightPlot = "LightPlot.png";
 	<img src="<?php echo $image3 ?>" width="512" height="384" alt="image 3" align="top"/>
 	<img src="<?php echo $image4 ?>" width="512" height="384" alt="image 3" align="top"/>
 
+
 	<img src="<?php echo $moisPlot ?>" width="512" height="384" alt="Moisture plot" align="top"/>
  	<img src="<?php echo $greenPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
  	<img src="<?php echo $lightPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
- 	
-
- 	<?php 
-		echo "<table style=\"width:75%\">
-				<tr> 
-					<th>Date and time</th>
-					<th>Plant</th>
-					<th>Temperature</th>
-					<th>Humidity</th>
-					<th>Moisture</th>
-					<th>Light</th>
-					<th>Motor</th>
-				</tr>";
-		for ($x = 0; $x < $plantrow_cnt; $x++) {
-			
-			$row = $plantresult->fetch_array(MYSQLI_BOTH);
-			$tempdate = $row["datetime"];
-			$tempplant = $row["plant"];
-			$temptemp = $row["temperature"];
-			$temphum = $row["humidity"];
-			$tempmois = $row["moisture"];
-			$templight = $row["ALS"];
-			$tempmotor = $row["motor"];
-			echo 
-			"<tr>
-				<td>$tempdate</td>
-				<td>$tempplant</td>
-				<td>$temptemp</td>
-				<td>$temphum</td>
-				<td>$tempmois</td>
-				<td>$templight</td>
-				<td>$tempmotor</td>
-			</tr>";
-		}		
-		echo "</table>";
-		$plantresult->free();
- 	?>
- 	
- 	<h2>Planty Camera</h2>
- 	
- 	<?php 
-		echo "<table style=\"width:75%\">
-				<tr> 
-					<th>Date and time</th>
-					<th>Original pixels</th>
-					<th>Green pixels</th>
-					<th>Green percentage</th>
-				</tr>";
-		for ($x = 0; $x < $camerarow_cnt; $x++) {
-			
-			$row = $cameraresult->fetch_array(MYSQLI_BOTH);
-			$tempdate = $row["datetime"];
-			$temporgpixel = $row["orgpixel"];
-			$tempgreenpixel = $row["greenpixel"];
-			$temppercent = $row["greenpercent"];
-			echo 
-			"<tr>
-				<td>$tempdate</td>
-				<td>$temporgpixel</td>
-				<td>$tempgreenpixel</td>
-				<td>$temppercent</td>
-			</tr>";
-		}		
-		echo "</table>";
-		$cameraresult->free();
- 	?>
+ 	 	
+ 	<form action="subpages/watch_planty.php">
+    <input type="submit" value="Two day data" />
+	</form>
+	
+	<form action="subpages/graph.php">
+    <input type="submit" value="Another graph" />
+	</form>
+	
  	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
 	
 </body>

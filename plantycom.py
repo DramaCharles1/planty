@@ -356,7 +356,7 @@ try:
 	
 	xgreen = []
 	ygreen = []
-	for entry in dataMois:
+	for entry in dataGreen:
 		xgreen.append(entry[1])
 		ygreen.append(float(entry[0]))
 		
@@ -386,7 +386,7 @@ copyfile(moisPlotName,moisPlotCopy)
 
 greenPlotName  = "/media/pi/USB/" + "GreenPlot.png"
 greenPlotCopy = "/var/www/html/" + "GreenPlot.png"
-greenPlot = Plots(xgreen,ygreen,[],"Timestamp","Growth",greenPlotName,"Growth","")
+greenPlot = Plots(xgreen,ygreen,[],"Timestamp","Growth (%)",greenPlotName,"Growth (%)","")
 greenPlot.CreatelinePlot()
 copyfile(greenPlotName,greenPlotCopy)
 
