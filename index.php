@@ -58,11 +58,13 @@ $lightPlot = "LightPlot.png";
 
 <body>
 	<h1>Planty McPlantface</h1>
-			
+	
 	<img src="<?php echo $image1 ?>" width="512" height="384" alt="image 1" align="top"/>
+<!--
 	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>
 	<img src="<?php echo $image3 ?>" width="512" height="384" alt="image 3" align="top"/>
 	<img src="<?php echo $image4 ?>" width="512" height="384" alt="image 3" align="top"/>
+-->
 
 
 	<img src="<?php echo $moisPlot ?>" width="512" height="384" alt="Moisture plot" align="top"/>
@@ -76,6 +78,16 @@ $lightPlot = "LightPlot.png";
 	<form action="subpages/graph.php">
     <input type="submit" value="Another graph" />
 	</form>
+	
+	<form action="subpages/planty_pics.php">
+    <input type="submit" value="Show daily pictures" />
+	</form>
+	
+<!--
+	<form action="subpages/planty_pics.php" method="get">
+	How many days to show: <input type="text" name="amount">
+	</form>
+-->
 	
  	<img src="https://s3.amazonaws.com/codecademy-content/courses/web-101/web101-image_brownbear.jpg" />
 	
