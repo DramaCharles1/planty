@@ -34,8 +34,10 @@ $image3 = str_replace("/var/www/html/","",$images[count($images)-3]);
 $image4 = str_replace("/var/www/html/","",$images[count($images)-4]); 
 
 $moisPlot = "MoisturePlot.png";
+$moisPlotWeek = "MoisturePlotWeek.png";
 $greenPlot = "GreenPlot.png";
 $lightPlot = "LightPlot.png";
+$lightPlotWeek = "LightPlotWeek.png";
 
 ?>
 
@@ -59,6 +61,7 @@ $lightPlot = "LightPlot.png";
 <body>
 	<h1>Planty McPlantface</h1>
 	
+	<h2>Today's picture</h2>
 	<img src="<?php echo $image1 ?>" width="512" height="384" alt="image 1" align="top"/>
 <!--
 	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>
@@ -66,10 +69,14 @@ $lightPlot = "LightPlot.png";
 	<img src="<?php echo $image4 ?>" width="512" height="384" alt="image 3" align="top"/>
 -->
 
-
+	<h2>Moisture</h2>
 	<img src="<?php echo $moisPlot ?>" width="512" height="384" alt="Moisture plot" align="top"/>
+ 	<img src="<?php echo $moisPlotWeek ?>" width="512" height="384" alt="Moisture plot week" align="top"/>
+ 	<h2>Sun light</h2>
+ 	<img src="<?php echo $lightPlot ?>" width="512" height="384" alt="Sun light plot" align="top"/>
+ 	<img src="<?php echo $lightPlotWeek ?>" width="512" height="384" alt="Sun light plot week" align="top"/>
+ 	<h2>Growth</h2>
  	<img src="<?php echo $greenPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
- 	<img src="<?php echo $lightPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
  	 	
  	<form action="subpages/watch_planty.php">
     <input type="submit" value="Two day data" />

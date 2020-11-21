@@ -15,16 +15,6 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-//$sql="SELECT * FROM plantyLog";
-$plantsql="SELECT * FROM plantyLog order by datetime desc limit 48";
-$plantresult = $conn->query($plantsql);
-$plantrow_cnt = $plantresult->num_rows;
-
-//$sql="SELECT * FROM plantyLog";
-$camerasql="SELECT * FROM cameraLog order by datetime desc limit 10";
-$cameraresult = $conn->query($camerasql);
-$camerarow_cnt = $cameraresult->num_rows;
-
 $moisQuery="SELECT * FROM plantyLog order by datetime desc limit 24";
 $moisResult = $conn->query($moisQuery);
 $moisrow_cnt = $moisResult->num_rows;

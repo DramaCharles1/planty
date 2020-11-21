@@ -342,6 +342,16 @@ try:
 		xmois.append(entry[1])
 		ymois.append(float(entry[0]))
 		
+	mois_queryWeek = "select moisture, datetime from plantyLog order by datetime desc limit 168"
+	myCursor.execute(mois_queryWeek)	
+	dataMoisWeek = myCursor.fetchall()
+	
+	xmoisWeek = []
+	ymoisWeek = []
+	for entry in dataMoisWeek:
+		xmoisWeek.append(entry[1])
+		ymoisWeek.append(float(entry[0]))	
+		
 	MoisThres_query = "select moisThres from inputData order by datetime desc limit 1"
 	myCursor.execute(MoisThres_query)
 	moisThresVal = myCursor.fetchall()[0][0]
@@ -349,6 +359,10 @@ try:
 	y2mois = []
 	for x in range(len(ymois)):
 		y2mois.append(float(moisThresVal))
+		
+	y2moisWeek = []
+	for x in range(len(ymoisWeek)):
+		y2moisWeek.append(float(moisThresVal))
 		
 	Green_query = "select greenpercent, datetime from cameraLog order by datetime desc limit 7"
 	myCursor.execute(Green_query)	
@@ -369,6 +383,16 @@ try:
 	for entry in dataLight:
 		xlight.append(entry[1])
 		ylight.append(float(entry[0]))
+		
+	dataLight_queryWeek = "select ALS, datetime from plantyLog order by datetime desc limit 168"
+	myCursor.execute(dataLight_queryWeek)	
+	dataLightWeek = myCursor.fetchall()
+	
+	xlightWeek = []
+	ylightWeek = []
+	for entry in dataLightWeek:
+		xlightWeek.append(entry[1])
+		ylightWeek.append(float(entry[0]))
 	
 	myCursor.close()
 	
@@ -384,6 +408,12 @@ moisPlot = Plots(xmois,y2mois,ymois,"Timestamp","Moisture",moisPlotName,"moistur
 moisPlot.Create2linePlot()
 copyfile(moisPlotName,moisPlotCopy)
 
+moisPlotNameWeek  = "/media/pi/USB/" + "MoisturePlotWeek.png"
+moisPlotCopyWeek = "/var/www/html/" + "MoisturePlotWeek.png"
+moisPlotWeek = Plots(xmoisWeek,y2moisWeek,ymoisWeek,"Timestamp","Moisture",moisPlotNameWeek,"moisture low limit","moisture")
+moisPlotWeek.Create2linePlot()
+copyfile(moisPlotNameWeek,moisPlotCopyWeek)
+
 greenPlotName  = "/media/pi/USB/" + "GreenPlot.png"
 greenPlotCopy = "/var/www/html/" + "GreenPlot.png"
 greenPlot = Plots(xgreen,ygreen,[],"Timestamp","Growth (%)",greenPlotName,"Growth (%)","")
@@ -395,3 +425,9 @@ lightPlotCopy = "/var/www/html/" + "LightPlot.png"
 lightPlot = Plots(xlight,ylight,[],"Timestamp","Light",lightPlotName,"Light","")
 lightPlot.CreatelinePlot()
 copyfile(lightPlotName,lightPlotCopy)
+
+lightPlotNameWeek  = "/media/pi/USB/" + "LightPlotWeek.png"
+lightPlotCopyWeek = "/var/www/html/" + "LightPlotWeek.png"
+lightPlotWeek = Plots(xlightWeek,ylightWeek,[],"Timestamp","Light",lightPlotNameWeek,"Light","")
+lightPlotWeek.CreatelinePlot()
+copyfile(lightPlotNameWeek,lightPlotCopyWeek)
