@@ -15,14 +15,21 @@ if ($conn->connect_error) {
 }
   
 //$sql="SELECT * FROM plantyLog";
-$plantsql="SELECT * FROM plantyLog order by datetime desc limit 48";
-$plantresult = $conn->query($plantsql);
-$plantrow_cnt = $plantresult->num_rows;
+//$plantsql="SELECT * FROM plantyLog order by datetime desc limit 48";
+//$plantresult = $conn->query($plantsql);
+//$plantrow_cnt = $plantresult->num_rows;
 
-//$sql="SELECT * FROM plantyLog";
-$camerasql="SELECT * FROM cameraLog order by datetime desc limit 10";
-$cameraresult = $conn->query($camerasql);
-$camerarow_cnt = $cameraresult->num_rows;
+$lastCameraUpdate="SELECT * FROM cameraLog";
+$lastCameraupdateResult = $conn->query($lastCameraUpdate);
+$lastCameraUpdateArray = $lastCameraupdateResult->fetch_array(MYSQLI_BOTH);
+$lastCameraUpdateDatetime = $lastCameraUpdateArray["datetime"];
+$lastCameraupdateResult->free();
+
+$lastupdate="SELECT * FROM plantyLog order by datetime desc limit 1";
+$lastupdateresult = $conn->query($lastupdate);
+$lastupdatearray = $lastupdateresult->fetch_array(MYSQLI_BOTH);
+$lastupdateDatetime = $lastupdatearray["datetime"];
+$lastupdateresult->free();
 
 //$dir="/media/savestuff";
 $dir="/var/www/html/Images";
@@ -61,8 +68,10 @@ $lightPlotWeek = "LightPlotWeek.png";
 
 <body>
 	<h1>Planty McPlantface</h1>
+	Last update: <?php echo $lastupdateDatetime?>
 	
 	<h2>Today's picture</h2>
+	Taken: <?php echo $lastupdateDatetime?>
 	<img src="<?php echo $image1 ?>" width="512" height="384" alt="image 1" align="top"/>
 <!--
 	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>
