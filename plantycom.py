@@ -374,6 +374,16 @@ try:
 		xgreen.append(entry[1])
 		ygreen.append(float(entry[0]))
 		
+	Green_queryMonth = "select greenpercent, datetime from cameraLog order by datetime desc limit 30"
+	myCursor.execute(Green_queryMonth)	
+	dataGreenMonth = myCursor.fetchall()
+	
+	xgreenMonth = []
+	ygreenMonth = []
+	for entry in dataGreenMonth:
+		xgreenMonth.append(entry[1])
+		ygreenMonth.append(float(entry[0]))
+		
 	dataLight_query = "select ALS, datetime from plantyLog order by datetime desc limit 24"
 	myCursor.execute(dataLight_query)	
 	dataLight = myCursor.fetchall()
@@ -404,30 +414,36 @@ except mysql.connector.Error as e:
 	
 moisPlotName  = "/media/pi/USB/" + "MoisturePlot.png"
 moisPlotCopy = "/var/www/html/" + "MoisturePlot.png"
-moisPlot = Plots(xmois,y2mois,ymois,"Timestamp","Moisture",moisPlotName,"moisture low limit","moisture")
+moisPlot = Plots(xmois,y2mois,ymois,"24 hours","Moisture",moisPlotName,"moisture low limit","moisture")
 moisPlot.Create2linePlot()
 copyfile(moisPlotName,moisPlotCopy)
 
 moisPlotNameWeek  = "/media/pi/USB/" + "MoisturePlotWeek.png"
 moisPlotCopyWeek = "/var/www/html/" + "MoisturePlotWeek.png"
-moisPlotWeek = Plots(xmoisWeek,y2moisWeek,ymoisWeek,"Timestamp","Moisture",moisPlotNameWeek,"moisture low limit","moisture")
+moisPlotWeek = Plots(xmoisWeek,y2moisWeek,ymoisWeek,"Week","Moisture",moisPlotNameWeek,"moisture low limit","moisture")
 moisPlotWeek.Create2linePlot()
 copyfile(moisPlotNameWeek,moisPlotCopyWeek)
 
 greenPlotName  = "/media/pi/USB/" + "GreenPlot.png"
 greenPlotCopy = "/var/www/html/" + "GreenPlot.png"
-greenPlot = Plots(xgreen,ygreen,[],"Timestamp","Growth (%)",greenPlotName,"Growth (%)","")
+greenPlot = Plots(xgreen,ygreen,[],"Week","Growth (%)",greenPlotName,"Growth (%)","")
 greenPlot.CreatelinePlot()
 copyfile(greenPlotName,greenPlotCopy)
 
+greenPlotNameMonth  = "/media/pi/USB/" + "GreenPlotMonth.png"
+greenPlotCopyMonth = "/var/www/html/" + "GreenPlotMonth.png"
+greenPlotMonth = Plots(xgreenMonth,ygreenMonth,[],"30 days","Growth (%)",greenPlotNameMonth,"Growth (%)","")
+greenPlotMonth.CreatelinePlot()
+copyfile(greenPlotNameMonth,greenPlotCopyMonth)
+
 lightPlotName  = "/media/pi/USB/" + "LightPlot.png"
 lightPlotCopy = "/var/www/html/" + "LightPlot.png"
-lightPlot = Plots(xlight,ylight,[],"Timestamp","Light",lightPlotName,"Light","")
+lightPlot = Plots(xlight,ylight,[],"24 hours","Light",lightPlotName,"Light","")
 lightPlot.CreatelinePlot()
 copyfile(lightPlotName,lightPlotCopy)
 
 lightPlotNameWeek  = "/media/pi/USB/" + "LightPlotWeek.png"
 lightPlotCopyWeek = "/var/www/html/" + "LightPlotWeek.png"
-lightPlotWeek = Plots(xlightWeek,ylightWeek,[],"Timestamp","Light",lightPlotNameWeek,"Light","")
+lightPlotWeek = Plots(xlightWeek,ylightWeek,[],"Week","Light",lightPlotNameWeek,"Light","")
 lightPlotWeek.CreatelinePlot()
 copyfile(lightPlotNameWeek,lightPlotCopyWeek)

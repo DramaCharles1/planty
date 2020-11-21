@@ -36,6 +36,7 @@ $image4 = str_replace("/var/www/html/","",$images[count($images)-4]);
 $moisPlot = "MoisturePlot.png";
 $moisPlotWeek = "MoisturePlotWeek.png";
 $greenPlot = "GreenPlot.png";
+$greenPlotMonth = "GreenPlotMonth.png";
 $lightPlot = "LightPlot.png";
 $lightPlotWeek = "LightPlotWeek.png";
 
@@ -77,6 +78,8 @@ $lightPlotWeek = "LightPlotWeek.png";
  	<img src="<?php echo $lightPlotWeek ?>" width="512" height="384" alt="Sun light plot week" align="top"/>
  	<h2>Growth</h2>
  	<img src="<?php echo $greenPlot ?>" width="512" height="384" alt="Growth plot" align="top"/>
+ 	<img src="<?php echo $greenPlotMonth ?>" width="512" height="384" alt="Growth plot month" align="top"/>
+ 	  	
  	 	
  	<form action="subpages/watch_planty.php">
     <input type="submit" value="Two day data" />
