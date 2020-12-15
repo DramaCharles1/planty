@@ -263,7 +263,7 @@ void loop()
             bright = 255;
           }
 
-          if (color == 0 || color == 1 || color == 2 || color == 3 || color == 4 || color == 5) {
+          if (color == 0 || color == 1 || color == 2 || color == 3 || color == 4 || color == 5 || color == 99) {
             setLED(color, bright);
 
             switch (color) {
@@ -284,6 +284,9 @@ void loop()
                 break;
               case 5:
                 retcolor = "blue";
+                break;
+              case 99:
+                retcolor = "mix";
                 break;
               default:
                 // statements
@@ -530,6 +533,13 @@ void setLED(int color, int bright) {
     //strip.setPixelColor(0, 255, 0, 255);
     strip.show();
   }
+  if (color == 99) {
+    uint32_t purpleish = strip.Color(255, 100, 255);
+    //digitalWrite(LED_PIN, HIGH);
+    strip.fill(purpleish, 0);
+    //strip.setPixelColor(0, 255, 128, 255);
+    strip.show();
+  }
   else if (color == 0) {
     //digitalWrite(LED_PIN, LOW);
     strip.clear();
@@ -573,7 +583,7 @@ void PI_control() {
 
     int brightControl = (controlSignal / maxControl) * 255;
 
-    setLED(1, brightControl);
+    setLED(99, brightControl);
 
     lastError = error;
     lastTime = currentTime;

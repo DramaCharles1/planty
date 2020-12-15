@@ -13,13 +13,8 @@ $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
-  
-//$sql="SELECT * FROM plantyLog";
-//$plantsql="SELECT * FROM plantyLog order by datetime desc limit 48";
-//$plantresult = $conn->query($plantsql);
-//$plantrow_cnt = $plantresult->num_rows;
 
-$lastCameraUpdate="SELECT * FROM cameraLog";
+$lastCameraUpdate="SELECT * FROM cameraLog order by datetime desc limit 1";
 $lastCameraupdateResult = $conn->query($lastCameraUpdate);
 $lastCameraUpdateArray = $lastCameraupdateResult->fetch_array(MYSQLI_BOTH);
 $lastCameraUpdateDatetime = $lastCameraUpdateArray["datetime"];
@@ -31,7 +26,6 @@ $lastupdatearray = $lastupdateresult->fetch_array(MYSQLI_BOTH);
 $lastupdateDatetime = $lastupdatearray["datetime"];
 $lastupdateresult->free();
 
-//$dir="/media/savestuff";
 $dir="/var/www/html/Images";
 $images = glob($dir . "/*.jpg");
 
@@ -71,7 +65,7 @@ $lightPlotWeek = "LightPlotWeek.png";
 	Last update: <?php echo $lastupdateDatetime?>
 	
 	<h2>Today's picture</h2>
-	Taken: <?php echo $lastupdateDatetime?>
+	Taken: <?php echo $lastCameraUpdateDatetime?>
 	<img src="<?php echo $image1 ?>" width="512" height="384" alt="image 1" align="top"/>
 <!--
 	<img src="<?php echo $image2 ?>" width="512" height="384" alt="image 2" align="top"/>

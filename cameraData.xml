@@ -1,10 +1,10 @@
 <planty>
   <planty_data>
     <duration>
-      0
+      10000
     </duration>
     <power>
-      0
+      100
     </power>
     <samples>
       10
@@ -13,10 +13,10 @@
       500
     </mois_thres>
     <setpoint>
-      30000
+      25000
     </setpoint>
     <max_control>
-      30000
+      26400
     </max_control>
   </planty_data>
   <cam_data>
